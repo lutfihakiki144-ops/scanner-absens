@@ -11,9 +11,12 @@
 
   <title>Scanner QR Absensi</title>
 
-  <script src="https://unpkg.com/html5-qrcode"
-          type="text/javascript">
+
+  <script
+    src="https://unpkg.com/html5-qrcode"
+    type="text/javascript">
   </script>
+
 
   <style>
 
@@ -90,7 +93,9 @@
     Arahkan kamera ke QR siswa
   </p>
 
+
   <div id="reader"></div>
+
 
   <div
     id="status"
@@ -99,6 +104,7 @@
     Meminta izin kamera...
 
   </div>
+
 
   <button
     class="close-button"
@@ -111,6 +117,7 @@
 </div>
 
 
+
 <script>
 
 let scanner = null;
@@ -120,9 +127,7 @@ let scanned = false;
 let returnOrigin = '*';
 
 
-/* ==============================
-   RETURN ORIGIN
-============================== */
+/* URL APLIKASI APPS SCRIPT */
 
 const params =
   new URLSearchParams(
@@ -131,7 +136,9 @@ const params =
 
 
 if (
-  params.get('returnOrigin')
+  params.get(
+    'returnOrigin'
+  )
 ) {
 
   returnOrigin =
@@ -142,23 +149,21 @@ if (
 }
 
 
-/* ==============================
-   STATUS
-============================== */
+/* STATUS */
 
 function setStatus(text) {
 
   document
-    .getElementById('status')
+    .getElementById(
+      'status'
+    )
     .textContent =
     text;
 
 }
 
 
-/* ==============================
-   CAMERA
-============================== */
+/* START */
 
 async function startScanner() {
 
@@ -182,7 +187,7 @@ async function startScanner() {
 
 
     /*
-     * Meminta izin kamera terlebih dahulu.
+     * MINTA IZIN KAMERA
      */
 
     const stream =
@@ -195,13 +200,16 @@ async function startScanner() {
     stream
       .getTracks()
       .forEach(
-        track =>
-          track.stop()
+        function(track) {
+
+          track.stop();
+
+        }
       );
 
 
     setStatus(
-      'Memulai kamera...'
+      'Mencari kamera...'
     );
 
 
@@ -222,22 +230,24 @@ async function startScanner() {
     }
 
 
+    /*
+     * CARI KAMERA BELAKANG
+     */
+
     let cameraId =
       cameras[0].id;
 
 
-    /*
-     * Pilih kamera belakang
-     * jika tersedia.
-     */
-
     const backCamera =
       cameras.find(
-        camera =>
-          /back|rear|environment/i
+        function(camera) {
+
+          return /back|rear|environment/i
             .test(
               camera.label
-            )
+            );
+
+        }
       );
 
 
@@ -260,25 +270,31 @@ async function startScanner() {
       cameraId,
 
       {
+
         fps: 15,
 
-        qrbox: function(
-          width,
-          height
-        ) {
+        qrbox:
+          function(
+            width,
+            height
+          ) {
 
-          const size =
-            Math.min(
-              width,
-              height
-            ) * 0.7;
+            const size =
+              Math.min(
+                width,
+                height
+              ) * 0.7;
 
-          return {
-            width: size,
-            height: size
-          };
 
-        },
+            return {
+
+              width: size,
+
+              height: size
+
+            };
+
+          },
 
         aspectRatio: 1
 
@@ -301,7 +317,7 @@ async function startScanner() {
 
 
         setStatus(
-          'QR berhasil dibaca. Mengirim data...'
+          'QR berhasil dibaca...'
         );
 
 
@@ -312,11 +328,11 @@ async function startScanner() {
       },
 
 
-      function(errorMessage) {
+      function() {
 
         /*
-         * Error scan sementara
-         * sengaja tidak ditampilkan.
+         * Error scanning sementara
+         * tidak perlu ditampilkan.
          */
 
       }
@@ -334,6 +350,7 @@ async function startScanner() {
 
     console.error(error);
 
+
     setStatus(
       'Kamera gagal dibuka: ' +
       error.message
@@ -344,9 +361,7 @@ async function startScanner() {
 }
 
 
-/* ==============================
-   SEND RESULT
-============================== */
+/* KIRIM KE APPS SCRIPT */
 
 async function sendResult(value) {
 
@@ -369,11 +384,6 @@ async function sendResult(value) {
   }
 
 
-  /*
-   * Kirim hasil QR ke
-   * aplikasi Google Apps Script.
-   */
-
   if (
     window.opener &&
     !window.opener.closed
@@ -382,8 +392,11 @@ async function sendResult(value) {
     window.opener.postMessage(
 
       {
-        type: 'QR_ATTENDANCE',
-        value: String(value).trim()
+        type:
+          'QR_ATTENDANCE',
+
+        value:
+          String(value).trim()
       },
 
       returnOrigin
@@ -392,7 +405,7 @@ async function sendResult(value) {
 
 
     setStatus(
-      'Berhasil. Scanner akan ditutup...'
+      'QR berhasil dikirim.'
     );
 
 
@@ -420,9 +433,7 @@ async function sendResult(value) {
 }
 
 
-/* ==============================
-   CLOSE
-============================== */
+/* TUTUP */
 
 async function closeScanner() {
 
@@ -450,9 +461,7 @@ async function closeScanner() {
 }
 
 
-/* ==============================
-   START
-============================== */
+/* MULAI */
 
 startScanner();
 
