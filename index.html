@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="id">
 
 <head>
@@ -32,9 +31,7 @@ body {
 
   color: white;
 
-  font-family:
-    Arial,
-    sans-serif;
+  font-family: Arial, sans-serif;
 
   text-align: center;
 
@@ -51,17 +48,12 @@ body {
 }
 
 h1 {
-
   margin-bottom: 5px;
-
 }
 
 .subtitle {
-
   color: #aaa;
-
   margin-bottom: 20px;
-
 }
 
 #reader {
@@ -138,15 +130,11 @@ button {
 }
 
 .success {
-
   background: #164e2d !important;
-
 }
 
 .error {
-
   background: #601818 !important;
-
 }
 
 .info {
@@ -165,52 +153,59 @@ button {
 
 <body>
 
+
 <div class="container">
 
-<h1>
-📷 SCANNER QR
-</h1>
+  <h1>
+    📷 SCANNER QR
+  </h1>
 
-<div class="subtitle">
-Scanner QR Absensi Siswa
-</div>
+  <div class="subtitle">
+    Scanner QR Absensi Siswa
+  </div>
 
-<select id="cameraSelect">
 
-<option value="">
-Memuat kamera...
-</option>
+  <select id="cameraSelect">
 
-</select>
+    <option value="">
+      Memuat kamera...
+    </option>
 
-<div id="reader"></div>
+  </select>
 
-<button
-onclick="startScanner()">
 
-📷 MULAI KAMERA
+  <div id="reader"></div>
 
-</button>
 
-<button
-class="stop"
-onclick="stopScanner()">
+  <button
+    onclick="startScanner()">
 
-⛔ STOP KAMERA
+    📷 MULAI KAMERA
 
-</button>
+  </button>
 
-<div id="status">
 
-Menyiapkan scanner...
+  <button
+    class="stop"
+    onclick="stopScanner()">
 
-</div>
+    ⛔ STOP KAMERA
 
-<div class="info">
+  </button>
 
-Arahkan QR siswa ke dalam kotak scanner.
 
-</div>
+  <div id="status">
+
+    Menyiapkan scanner...
+
+  </div>
+
+
+  <div class="info">
+
+    Arahkan QR siswa ke dalam kotak scanner.
+
+  </div>
 
 </div>
 
@@ -218,14 +213,16 @@ Arahkan QR siswa ke dalam kotak scanner.
 <script>
 
 const params =
-new URLSearchParams(
-  window.location.search
-);
+  new URLSearchParams(
+    window.location.search
+  );
+
 
 const returnOrigin =
-params.get(
-  'returnOrigin'
-) || '*';
+  params.get(
+    'returnOrigin'
+  ) || '*';
+
 
 let scanner = null;
 
@@ -236,32 +233,34 @@ let lastScan = '';
 let lastScanTime = 0;
 
 
-/* =========================
+/* =========================================
    STATUS
-========================= */
+========================================= */
 
 function setStatus(
   message,
   type = ''
 ) {
 
-  const el =
+  const status =
     document.getElementById(
       'status'
     );
 
-  el.textContent =
+
+  status.textContent =
     message;
 
-  el.className =
+
+  status.className =
     type;
 
 }
 
 
-/* =========================
+/* =========================================
    LOAD CAMERA
-========================= */
+========================================= */
 
 async function loadCameras() {
 
@@ -279,6 +278,7 @@ async function loadCameras() {
 
     }
 
+
     /*
      * Minta izin kamera.
      */
@@ -290,11 +290,15 @@ async function loadCameras() {
           video: true
         });
 
+
     stream
       .getTracks()
       .forEach(
-        track =>
-          track.stop()
+        function(track) {
+
+          track.stop();
+
+        }
       );
 
 
@@ -308,7 +312,9 @@ async function loadCameras() {
         'cameraSelect'
       );
 
-    select.innerHTML = '';
+
+    select.innerHTML =
+      '';
 
 
     if (!cameras.length) {
@@ -316,10 +322,12 @@ async function loadCameras() {
       select.innerHTML =
         '<option>Tidak ada kamera</option>';
 
+
       setStatus(
         '❌ Kamera tidak ditemukan.',
         'error'
       );
+
 
       return;
 
@@ -334,13 +342,16 @@ async function loadCameras() {
             'option'
           );
 
+
         option.value =
           camera.id;
+
 
         option.textContent =
           camera.label ||
           'Kamera ' +
           (index + 1);
+
 
         select.appendChild(
           option
@@ -351,16 +362,19 @@ async function loadCameras() {
 
 
     /*
-     * Prioritas kamera belakang.
+     * Prioritaskan kamera belakang.
      */
 
     const rear =
       cameras.find(
-        camera =>
-          /back|rear|environment/i
+        function(camera) {
+
+          return /back|rear|environment/i
             .test(
               camera.label
-            )
+            );
+
+        }
       );
 
 
@@ -376,9 +390,11 @@ async function loadCameras() {
       '✅ Kamera siap. Tekan MULAI KAMERA.'
     );
 
+
   } catch (error) {
 
     console.error(error);
+
 
     setStatus(
       '❌ Kamera tidak dapat digunakan: ' +
@@ -391,13 +407,15 @@ async function loadCameras() {
 }
 
 
-/* =========================
-   START
-========================= */
+/* =========================================
+   START SCANNER
+========================================= */
 
 async function startScanner() {
 
-  if (running) return;
+  if (running)
+    return;
+
 
   try {
 
@@ -414,6 +432,7 @@ async function startScanner() {
         '❌ Pilih kamera terlebih dahulu.',
         'error'
       );
+
 
       return;
 
@@ -445,8 +464,9 @@ async function startScanner() {
                 Math.min(
                   width,
                   height
-                ) * 0.70
+                ) * .70
               );
+
 
             return {
 
@@ -460,9 +480,11 @@ async function startScanner() {
 
           },
 
-        aspectRatio: 1.0,
+        aspectRatio:
+          1.0,
 
-        disableFlip: false
+        disableFlip:
+          false
 
       },
 
@@ -476,12 +498,10 @@ async function startScanner() {
       },
 
 
-      function(errorMessage) {
+      function() {
 
         /*
-         * Tidak perlu
-         * menampilkan error
-         * setiap frame.
+         * Ignore scan frame errors.
          */
 
       }
@@ -493,13 +513,14 @@ async function startScanner() {
 
 
     setStatus(
-      '📷 SCANNER AKTIF — arahkan ke QR siswa.'
+      '📷 SCANNER AKTIF — arahkan kamera ke QR.'
     );
 
 
   } catch (error) {
 
     console.error(error);
+
 
     setStatus(
       '❌ Gagal membuka kamera: ' +
@@ -512,9 +533,9 @@ async function startScanner() {
 }
 
 
-/* =========================
+/* =========================================
    QR FOUND
-========================= */
+========================================= */
 
 function qrFound(
   decodedText
@@ -525,13 +546,15 @@ function qrFound(
 
 
   /*
-   * Hindari QR sama
-   * terbaca berkali-kali.
+   * Jangan kirim QR yang sama
+   * berulang kali.
    */
 
   if (
     decodedText === lastScan &&
-    now - lastScanTime < 2500
+    now -
+      lastScanTime <
+      2500
   ) {
 
     return;
@@ -541,6 +564,7 @@ function qrFound(
 
   lastScan =
     decodedText;
+
 
   lastScanTime =
     now;
@@ -554,8 +578,7 @@ function qrFound(
 
 
   /*
-   * Kirim ke aplikasi
-   * Google Apps Script.
+   * Kirim ke Apps Script.
    */
 
   if (
@@ -584,9 +607,9 @@ function qrFound(
 }
 
 
-/* =========================
+/* =========================================
    STOP
-========================= */
+========================================= */
 
 async function stopScanner() {
 
@@ -613,7 +636,8 @@ async function stopScanner() {
   }
 
 
-  running = false;
+  running =
+    false;
 
 
   setStatus(
@@ -623,9 +647,9 @@ async function stopScanner() {
 }
 
 
-/* =========================
-   START LOAD
-========================= */
+/* =========================================
+   LOAD
+========================================= */
 
 window.addEventListener(
   'load',
