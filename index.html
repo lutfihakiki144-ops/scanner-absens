@@ -1,1094 +1,1074 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
+  <base target="_top">
 
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+  >
 
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1,maximum-scale=1"
->
+  <meta name="theme-color" content="#0f766e">
 
-<meta
-  name="theme-color"
-  content="#0f766e"
->
+  <title>ABSENSI SISWA</title>
 
-<title>QR Scanner Absensi</title>
+  <!-- QR GENERATOR -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-
-<style>
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  margin: 0;
-  min-height: 100%;
-
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Arial,
-    sans-serif;
-
-  background:
-    radial-gradient(
-      circle at 10% 10%,
-      rgba(16,185,129,.25),
-      transparent 35%
-    ),
-    radial-gradient(
-      circle at 90% 90%,
-      rgba(20,184,166,.2),
-      transparent 35%
-    ),
-    #061a18;
-
-  color: white;
-}
-
-body {
-  padding: 12px;
-}
-
-.app {
-  width: 100%;
-  max-width: 520px;
-
-  min-height:
-    calc(100vh - 24px);
-
-  margin: auto;
-
-  padding: 15px;
-
-  border-radius: 30px;
-
-  background:
-    rgba(255,255,255,.07);
-
-  border:
-    1px solid
-    rgba(255,255,255,.13);
-
-  box-shadow:
-    0 30px 80px
-    rgba(0,0,0,.3);
-
-  backdrop-filter:
-    blur(30px);
-
-  -webkit-backdrop-filter:
-    blur(30px);
-}
-
-.header {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  gap: 10px;
-
-  margin-bottom: 15px;
-}
-
-.brand {
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-}
-
-.logo {
-  width: 45px;
-  height: 45px;
-
-  display: grid;
-
-  place-items: center;
-
-  border-radius: 15px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #10b981,
-      #0f766e
-    );
-
-  font-size: 22px;
-
-  font-weight: 900;
-}
-
-.title strong {
-  display: block;
-
-  font-size: 15px;
-}
-
-.title small {
-  display: block;
-
-  margin-top: 3px;
-
-  color: #94b8b2;
-
-  font-size: 10px;
-}
-
-.status {
-  padding:
-    7px 10px;
-
-  border-radius: 999px;
-
-  background:
-    rgba(16,185,129,.12);
-
-  color:
-    #6ee7b7;
-
-  font-size: 10px;
-
-  font-weight: 800;
-}
-
-.scanner-card {
-  overflow: hidden;
-
-  border-radius: 25px;
-
-  background:
-    rgba(0,0,0,.22);
-
-  border:
-    1px solid
-    rgba(255,255,255,.1);
-}
-
-#reader {
-  width: 100%;
-
-  min-height: 320px;
-}
-
-#reader video {
-  border-radius: 20px;
-}
-
-#reader__dashboard {
-  padding: 10px !important;
-}
-
-#reader__dashboard_section_csr button,
-#reader__dashboard_section_swaplink {
-  color: white !important;
-}
-
-.controls {
-  margin-top: 13px;
-
-  display: grid;
-
-  grid-template-columns:
-    1fr 1fr;
-
-  gap: 9px;
-}
-
-select,
-button {
-  min-height: 45px;
-
-  border-radius: 14px;
-
-  font: inherit;
-}
-
-select {
-  width: 100%;
-
-  padding:
-    10px;
-
-  color: white;
-
-  background:
-    rgba(255,255,255,.08);
-
-  border:
-    1px solid
-    rgba(255,255,255,.12);
-
-  outline: none;
-}
-
-select option {
-  background: #102c29;
-}
-
-button {
-  padding:
-    10px 15px;
-
-  color: white;
-
-  font-weight: 800;
-
-  border:
-    1px solid
-    rgba(255,255,255,.12);
-
-  background:
-    rgba(255,255,255,.08);
-
-  cursor: pointer;
-}
-
-button.primary {
-  background:
-    linear-gradient(
-      135deg,
-      #10b981,
-      #0f766e
-    );
-
-  border-color:
-    transparent;
-}
-
-.message {
-  margin-top: 14px;
-
-  padding:
-    14px;
-
-  border-radius: 17px;
-
-  background:
-    rgba(255,255,255,.06);
-
-  border:
-    1px solid
-    rgba(255,255,255,.08);
-
-  color: #b8cfcb;
-
-  text-align: center;
-
-  font-size: 13px;
-}
-
-.success {
-  color: #6ee7b7;
-
-  background:
-    rgba(16,185,129,.1);
-
-  border-color:
-    rgba(16,185,129,.2);
-}
-
-.error {
-  color: #fca5a5;
-
-  background:
-    rgba(239,68,68,.1);
-
-  border-color:
-    rgba(239,68,68,.2);
-}
-
-.info {
-  margin-top: 15px;
-
-  color: #76938f;
-
-  text-align: center;
-
-  font-size: 10px;
-
-  line-height: 1.6;
-}
-
-.hidden {
-  display: none !important;
-}
-
-</style>
-
+  <?!= include('style'); ?>
 </head>
-
 
 <body>
 
-<div class="app">
+<!-- =====================================================
+     LOADING
+====================================================== -->
+<div id="loadingOverlay" class="loading-overlay hidden">
+  <div class="loading-card glass">
+    <div class="spinner"></div>
+    <div id="loadingText">Memproses...</div>
+  </div>
+</div>
 
-  <div class="header">
+
+<!-- =====================================================
+     TOAST
+====================================================== -->
+<div id="toast" class="toast">
+  <div id="toastIcon" class="toast-icon">✓</div>
+
+  <div class="toast-content">
+    <strong id="toastTitle">Berhasil</strong>
+    <span id="toastText">Data berhasil diproses.</span>
+  </div>
+
+  <button id="toastClose" type="button">×</button>
+</div>
+
+
+<!-- =====================================================
+     LOGIN
+====================================================== -->
+<section id="loginView" class="login-view">
+
+  <div class="login-glow glow-one"></div>
+  <div class="login-glow glow-two"></div>
+
+  <div class="login-card glass">
+
+    <div class="brand-icon">
+      <span>✓</span>
+    </div>
+
+    <div class="system-status">
+      <span class="status-dot"></span>
+      SYSTEM ONLINE
+    </div>
+
+    <h1>ABSENSI SISWA</h1>
+
+    <p class="login-subtitle">
+      Sistem Informasi Kehadiran Siswa
+    </p>
+
+    <div class="login-form">
+
+      <label for="loginUser">
+        Username
+      </label>
+
+      <div class="input-glass">
+        <span>◉</span>
+
+        <input
+          id="loginUser"
+          type="text"
+          autocomplete="username"
+          placeholder="Masukkan username"
+        >
+      </div>
+
+
+      <label for="loginPass">
+        Password
+      </label>
+
+      <div class="input-glass">
+        <span>●</span>
+
+        <input
+          id="loginPass"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Masukkan password"
+        >
+      </div>
+
+
+      <button
+        id="loginBtn"
+        class="btn btn-primary login-button"
+        type="button"
+      >
+        MASUK
+      </button>
+
+      <div id="loginMsg" class="login-message"></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     APPLICATION
+====================================================== -->
+<section id="appView" class="app-view hidden">
+
+  <!-- TOP BAR -->
+  <header class="topbar glass">
 
     <div class="brand">
+      <div class="brand-small-icon">✓</div>
 
-      <div class="logo">
-        QR
+      <div>
+        <strong>CYBER ATTENDANCE</strong>
+        <small>Sistem Informasi Kehadiran</small>
       </div>
-
-      <div class="title">
-        <strong>QR ABSENSI</strong>
-        <small>Scanner Kehadiran Siswa</small>
-      </div>
-
     </div>
 
-    <div
-      id="status"
-      class="status"
-    >
-      CAMERA
+    <div class="top-user">
+      <span id="userNameTop">LUTFI</span>
+
+      <span
+        id="userRoleTop"
+        class="role-badge"
+      >
+        ADMIN
+      </span>
+
+      <button
+        id="logoutBtn"
+        class="logout-btn"
+        type="button"
+      >
+        Keluar
+      </button>
     </div>
 
-  </div>
+  </header>
 
 
-  <div class="scanner-card">
-
-    <div id="reader"></div>
-
-  </div>
-
-
-  <div class="controls">
-
-    <select id="cameraSelect">
-      <option value="">
-        Memuat kamera...
-      </option>
-    </select>
+  <!-- NAVIGATION -->
+  <nav class="navigation glass">
 
     <button
-      id="switchBtn"
+      class="nav-btn active"
+      data-page="dashboard"
       type="button"
-      class="primary"
     >
-      ↻ GANTI KAMERA
+      <span>⌂</span>
+      Dashboard
     </button>
 
-  </div>
+    <button
+      class="nav-btn"
+      data-page="absensi"
+      type="button"
+    >
+      <span>✓</span>
+      Absensi
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="siswa"
+      type="button"
+    >
+      <span>♙</span>
+      Siswa
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="kelas"
+      type="button"
+    >
+      <span>▦</span>
+      Kelas
+    </button>
+
+    <button
+      class="nav-btn"
+      data-page="rekap"
+      type="button"
+    >
+      <span>▤</span>
+      Rekap
+    </button>
+
+  </nav>
 
 
-  <div
-    id="message"
-    class="message"
-  >
-    Mengaktifkan kamera...
-  </div>
+  <main class="main-content">
 
 
-  <div class="info">
-    Arahkan kamera ke QR Code siswa.<br>
-    Setelah QR terbaca, absensi langsung dikirim ke sistem.
+    <!-- =================================================
+         DASHBOARD
+    ================================================== -->
+    <section
+      id="page-dashboard"
+      class="page active-page"
+    >
+
+      <div class="page-heading">
+
+        <div>
+          <span class="eyebrow">DASHBOARD</span>
+
+          <h2>
+            Selamat datang,
+            <span id="welcomeName">LUTFI</span>
+          </h2>
+
+          <p>
+            Pantau kehadiran siswa secara realtime.
+          </p>
+        </div>
+
+        <div class="date-chip">
+          <span>●</span>
+          <span id="dashboardDate">-</span>
+        </div>
+
+      </div>
+
+
+      <!-- SCAN -->
+      <div class="hero-scan glass">
+
+        <div class="hero-scan-icon">
+          QR
+        </div>
+
+        <div class="hero-scan-text">
+
+          <span class="eyebrow">
+            QR ATTENDANCE
+          </span>
+
+          <h3>Scan Kehadiran</h3>
+
+          <p>
+            Scan QR siswa untuk mencatat
+            kehadiran secara otomatis sebagai
+            <strong>Hadir</strong>.
+          </p>
+
+        </div>
+
+        <button
+          id="dashboardScanBtn"
+          class="btn btn-primary"
+          type="button"
+        >
+          BUKA SCANNER
+        </button>
+
+      </div>
+
+
+      <!-- STATISTICS -->
+      <div class="stats-grid">
+
+        <div class="stat-card glass">
+          <span class="stat-icon">♙</span>
+          <div>
+            <small>Total Siswa</small>
+            <strong id="totalSiswa">0</strong>
+          </div>
+        </div>
+
+        <div class="stat-card glass">
+          <span class="stat-icon success">✓</span>
+          <div>
+            <small>Hadir</small>
+            <strong id="totalHadir">0</strong>
+          </div>
+        </div>
+
+        <div class="stat-card glass">
+          <span class="stat-icon warning">!</span>
+          <div>
+            <small>Izin</small>
+            <strong id="totalIzin">0</strong>
+          </div>
+        </div>
+
+        <div class="stat-card glass">
+          <span class="stat-icon danger">+</span>
+          <div>
+            <small>Sakit</small>
+            <strong id="totalSakit">0</strong>
+          </div>
+        </div>
+
+        <div class="stat-card glass">
+          <span class="stat-icon dark">×</span>
+          <div>
+            <small>Alpa</small>
+            <strong id="totalAlpa">0</strong>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         ABSENSI
+    ================================================== -->
+    <section
+      id="page-absensi"
+      class="page"
+    >
+
+      <div class="page-heading">
+
+        <div>
+          <span class="eyebrow">ATTENDANCE</span>
+
+          <h2>Absensi Siswa</h2>
+
+          <p>
+            Absensi manual berdasarkan kelas.
+          </p>
+        </div>
+
+        <button
+          id="openScannerBtn"
+          class="btn btn-primary"
+          type="button"
+        >
+          SCAN QR
+        </button>
+
+      </div>
+
+
+      <div class="filter-card glass">
+
+        <div class="field">
+
+          <label for="attendanceDate">
+            Tanggal
+          </label>
+
+          <input
+            id="attendanceDate"
+            type="date"
+          >
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="attendanceClass">
+            Kelas
+          </label>
+
+          <select id="attendanceClass">
+            <option value="">
+              Pilih kelas terlebih dahulu
+            </option>
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <div class="glass table-card">
+
+        <div class="table-header">
+
+          <div>
+            <span class="eyebrow">
+              DAFTAR SISWA
+            </span>
+
+            <h3>
+              Absensi Manual
+            </h3>
+          </div>
+
+          <span
+            id="attendanceCount"
+            class="count-badge"
+          >
+            0 siswa
+          </span>
+
+        </div>
+
+
+        <div
+          id="manualAttendanceList"
+          class="attendance-list"
+        >
+          <div class="empty-state">
+            Pilih kelas untuk menampilkan siswa.
+          </div>
+        </div>
+
+
+        <div class="table-footer">
+
+          <button
+            id="saveAttendanceBtn"
+            class="btn btn-primary"
+            type="button"
+          >
+            💾 SIMPAN ABSENSI
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         SISWA
+    ================================================== -->
+    <section
+      id="page-siswa"
+      class="page"
+    >
+
+      <div class="page-heading">
+
+        <div>
+          <span class="eyebrow">
+            MASTER DATA
+          </span>
+
+          <h2>Data Siswa</h2>
+
+          <p>
+            Kelola data siswa.
+          </p>
+        </div>
+
+        <button
+          id="addStudentBtn"
+          class="btn btn-primary admin-only"
+          type="button"
+        >
+          + TAMBAH SISWA
+        </button>
+
+      </div>
+
+
+      <div class="toolbar glass">
+
+        <div class="search-box">
+          <span>⌕</span>
+
+          <input
+            id="studentSearch"
+            type="search"
+            placeholder="Cari nama, NIS, NISN atau kelas..."
+          >
+        </div>
+
+        <span
+          id="studentTotal"
+          class="count-badge"
+        >
+          0 siswa
+        </span>
+
+      </div>
+
+
+      <div class="glass table-card">
+
+        <div class="table-scroll">
+
+          <table class="data-table">
+
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>NIS</th>
+                <th>Nama</th>
+                <th>Kelas</th>
+                <th>Gender</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+
+            <tbody id="studentTableBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         KELAS
+    ================================================== -->
+    <section
+      id="page-kelas"
+      class="page"
+    >
+
+      <div class="page-heading">
+
+        <div>
+          <span class="eyebrow">
+            MASTER DATA
+          </span>
+
+          <h2>Data Kelas</h2>
+
+          <p>
+            Tambah dan kelola kelas.
+          </p>
+        </div>
+
+        <button
+          id="addClassBtn"
+          class="btn btn-primary admin-only"
+          type="button"
+        >
+          + TAMBAH KELAS
+        </button>
+
+      </div>
+
+
+      <div
+        id="classGrid"
+        class="class-grid"
+      ></div>
+
+    </section>
+
+
+    <!-- =================================================
+         REKAP
+    ================================================== -->
+    <section
+      id="page-rekap"
+      class="page"
+    >
+
+      <div class="page-heading">
+
+        <div>
+          <span class="eyebrow">
+            REPORT
+          </span>
+
+          <h2>Rekap Absensi</h2>
+
+          <p>
+            Pilih tanggal atau bulan untuk melihat laporan.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="report-card glass">
+
+        <div class="report-tabs">
+
+          <button
+            id="reportDateTab"
+            class="report-tab active"
+            type="button"
+          >
+            Per Tanggal
+          </button>
+
+          <button
+            id="reportMonthTab"
+            class="report-tab"
+            type="button"
+          >
+            Per Bulan
+          </button>
+
+        </div>
+
+
+        <div
+          id="dateControl"
+          class="report-control"
+        >
+
+          <label for="reportDate">
+            Tanggal
+          </label>
+
+          <input
+            id="reportDate"
+            type="date"
+          >
+
+        </div>
+
+
+        <div
+          id="monthControl"
+          class="report-control hidden"
+        >
+
+          <label for="reportMonth">
+            Bulan
+          </label>
+
+          <input
+            id="reportMonth"
+            type="month"
+          >
+
+        </div>
+
+
+        <button
+          id="loadReportBtn"
+          class="btn btn-primary"
+          type="button"
+        >
+          TAMPILKAN
+        </button>
+
+      </div>
+
+
+      <div class="glass table-card">
+
+        <div class="table-scroll">
+
+          <table class="data-table">
+
+            <thead id="reportHead"></thead>
+
+            <tbody id="reportBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</section>
+
+
+<!-- =====================================================
+     MODAL SISWA
+====================================================== -->
+<div
+  id="studentModal"
+  class="modal hidden"
+>
+
+  <div class="modal-backdrop"></div>
+
+  <div class="modal-card glass">
+
+    <div class="modal-header">
+
+      <div>
+        <span class="eyebrow">
+          DATA SISWA
+        </span>
+
+        <h3 id="studentModalTitle">
+          Tambah Siswa
+        </h3>
+      </div>
+
+      <button
+        id="closeStudentModal"
+        class="modal-close"
+        type="button"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+      <input
+        id="studentId"
+        type="hidden"
+      >
+
+
+      <div class="form-grid">
+
+        <div class="field">
+          <label for="studentNis">
+            NIS
+          </label>
+
+          <input
+            id="studentNis"
+            type="text"
+            placeholder="NIS"
+          >
+        </div>
+
+
+        <div class="field">
+          <label for="studentNisn">
+            NISN
+          </label>
+
+          <input
+            id="studentNisn"
+            type="text"
+            placeholder="NISN"
+          >
+        </div>
+
+
+        <div class="field full">
+          <label for="studentNama">
+            Nama Lengkap
+          </label>
+
+          <input
+            id="studentNama"
+            type="text"
+            placeholder="Nama lengkap siswa"
+          >
+        </div>
+
+
+        <div class="field">
+
+          <label for="studentKelas">
+            Kelas
+          </label>
+
+          <select id="studentKelas">
+            <option value="">
+              Pilih kelas
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="studentGender">
+            Jenis Kelamin
+          </label>
+
+          <select id="studentGender">
+
+            <option value="">
+              Pilih
+            </option>
+
+            <option value="Laki-laki">
+              Laki-laki
+            </option>
+
+            <option value="Perempuan">
+              Perempuan
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="studentHp">
+            No. HP
+          </label>
+
+          <input
+            id="studentHp"
+            type="tel"
+            placeholder="08xxxxxxxxxx"
+          >
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="studentStatus">
+            Status
+          </label>
+
+          <select id="studentStatus">
+
+            <option value="Aktif">
+              Aktif
+            </option>
+
+            <option value="Nonaktif">
+              Nonaktif
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        id="cancelStudentBtn"
+        class="btn btn-secondary"
+        type="button"
+      >
+        BATAL
+      </button>
+
+      <button
+        id="saveStudentBtn"
+        class="btn btn-primary"
+        type="button"
+      >
+        SIMPAN
+      </button>
+
+    </div>
+
   </div>
 
 </div>
 
 
-<script>
+<!-- =====================================================
+     MODAL KELAS
+====================================================== -->
+<div
+  id="classModal"
+  class="modal hidden"
+>
 
-'use strict';
+  <div class="modal-backdrop"></div>
 
+  <div class="modal-card glass">
 
-/* =====================================================
-   STATE
-===================================================== */
+    <div class="modal-header">
 
-const state = {
+      <div>
+        <span class="eyebrow">
+          MASTER DATA
+        </span>
 
-  scanner: null,
+        <h3 id="classModalTitle">
+          Tambah Kelas
+        </h3>
+      </div>
 
-  cameras: [],
+      <button
+        id="closeClassModal"
+        class="modal-close"
+        type="button"
+      >
+        ×
+      </button>
 
-  currentCamera: null,
+    </div>
 
-  running: false,
 
-  sent: false,
+    <div class="modal-body">
 
-  returnOrigin: '',
+      <input
+        id="classId"
+        type="hidden"
+      >
 
-  fallbackStarted: false
 
-};
+      <div class="field">
 
+        <label for="classNama">
+          Nama Kelas
+        </label>
 
-/* =====================================================
-   ELEMENTS
-===================================================== */
+        <input
+          id="classNama"
+          type="text"
+          placeholder="Contoh: X IPA 1"
+        >
 
-const reader =
-  document.getElementById('reader');
+      </div>
 
-const cameraSelect =
-  document.getElementById('cameraSelect');
 
-const switchBtn =
-  document.getElementById('switchBtn');
+      <div class="field">
 
-const message =
-  document.getElementById('message');
+        <label for="classWali">
+          Wali Kelas
+        </label>
 
-const status =
-  document.getElementById('status');
+        <input
+          id="classWali"
+          type="text"
+          placeholder="Nama wali kelas"
+        >
 
+      </div>
 
-/* =====================================================
-   URL
-===================================================== */
 
-function getReturnOrigin() {
+      <div class="field">
 
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
+        <label for="classTahun">
+          Tahun Ajaran
+        </label>
 
-  return (
-    params.get('returnOrigin') ||
-    ''
-  );
+        <input
+          id="classTahun"
+          type="text"
+          placeholder="2026/2027"
+        >
 
-}
+      </div>
 
+    </div>
 
-/* =====================================================
-   MESSAGE
-===================================================== */
 
-function setMessage(
-  text,
-  type
-) {
+    <div class="modal-footer">
 
-  message.textContent =
-    text || '';
+      <button
+        id="cancelClassBtn"
+        class="btn btn-secondary"
+        type="button"
+      >
+        BATAL
+      </button>
 
-  message.className =
-    'message ' +
-    (type || '');
+      <button
+        id="saveClassBtn"
+        class="btn btn-primary"
+        type="button"
+      >
+        SIMPAN
+      </button>
 
-}
+    </div>
 
+  </div>
 
-/* =====================================================
-   CAMERA LIST
-===================================================== */
+</div>
 
-async function loadCameras() {
 
-  try {
+<!-- =====================================================
+     MODAL QR
+====================================================== -->
+<div
+  id="qrModal"
+  class="modal hidden"
+>
 
-    state.cameras =
-      await Html5Qrcode.getCameras();
+  <div class="modal-backdrop"></div>
 
+  <div class="modal-card qr-modal-card glass">
 
-    if (
-      !state.cameras ||
-      !state.cameras.length
-    ) {
+    <div class="modal-header">
 
-      throw new Error(
-        'Tidak ada kamera yang ditemukan.'
-      );
+      <div>
+        <span class="eyebrow">
+          STUDENT QR
+        </span>
 
-    }
+        <h3 id="qrStudentName">
+          QR Siswa
+        </h3>
+      </div>
 
+      <button
+        id="closeQrModal"
+        class="modal-close"
+        type="button"
+      >
+        ×
+      </button>
 
-    cameraSelect.innerHTML = '';
+    </div>
 
 
-    state.cameras.forEach(
-      function(camera, index) {
+    <div class="qr-content">
 
-        const option =
-          document.createElement(
-            'option'
-          );
+      <div
+        id="qrBox"
+        class="qr-box"
+      ></div>
 
-        option.value =
-          camera.id;
+      <div
+        id="qrStudentInfo"
+        class="qr-student-info"
+      ></div>
 
-        option.textContent =
-          camera.label ||
-          ('Kamera ' + (index + 1));
+    </div>
 
-        cameraSelect.appendChild(
-          option
-        );
 
-      }
-    );
+    <div class="modal-footer">
 
+      <button
+        id="printQrBtn"
+        class="btn btn-secondary"
+        type="button"
+      >
+        CETAK
+      </button>
 
-    const preferred =
-      choosePreferredCamera(
-        state.cameras
-      );
+      <button
+        id="downloadQrBtn"
+        class="btn btn-primary"
+        type="button"
+      >
+        DOWNLOAD QR
+      </button>
 
+    </div>
 
-    cameraSelect.value =
-      preferred.id;
+  </div>
 
+</div>
 
-    await startCamera(
-      preferred.id
-    );
 
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
 
-  } catch (error) {
-
-    console.error(error);
-
-    setMessage(
-      'Kamera belum dapat diakses. Izinkan kamera pada browser.',
-      'error'
-    );
-
-    status.textContent =
-      'KAMERA ERROR';
-
-
-    await startFallback();
-
-  }
-
-}
-
-
-/* =====================================================
-   PREFER CAMERA
-===================================================== */
-
-function choosePreferredCamera(
-  cameras
-) {
-
-  const text =
-    cameras
-      .map(function(c) {
-        return {
-          camera: c,
-          label:
-            String(
-              c.label || ''
-            ).toLowerCase()
-        };
-      });
-
-
-  const back =
-    text.find(function(x) {
-
-      return (
-        x.label.includes('back') ||
-        x.label.includes('rear') ||
-        x.label.includes('environment') ||
-        x.label.includes('belakang')
-      );
-
-    });
-
-
-  if (back) {
-    return back.camera;
-  }
-
-
-  return cameras[0];
-
-}
-
-
-/* =====================================================
-   START CAMERA
-===================================================== */
-
-async function startCamera(
-  cameraId
-) {
-
-  state.sent = false;
-
-
-  await stopScanner();
-
-
-  state.scanner =
-    new Html5Qrcode(
-      'reader'
-    );
-
-
-  const config = {
-
-    fps: 15,
-
-    qrbox: function(
-      viewfinderWidth,
-      viewfinderHeight
-    ) {
-
-      const min =
-        Math.min(
-          viewfinderWidth,
-          viewfinderHeight
-        );
-
-      const size =
-        Math.max(
-          180,
-          Math.min(
-            300,
-            Math.floor(
-              min * 0.72
-            )
-          )
-        );
-
-      return {
-        width: size,
-        height: size
-      };
-
-    },
-
-    aspectRatio: 1.0,
-
-    disableFlip: false
-
-  };
-
-
-  try {
-
-    await state.scanner.start(
-      cameraId,
-      config,
-      onScanSuccess,
-      onScanError
-    );
-
-
-    state.running = true;
-
-    state.currentCamera =
-      cameraId;
-
-    state.fallbackStarted =
-      false;
-
-
-    status.textContent =
-      'CAMERA AKTIF';
-
-    setMessage(
-      'Kamera aktif. Arahkan ke QR siswa.',
-      'info'
-    );
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    setMessage(
-      'Kamera gagal dimulai: ' +
-      error.message,
-      'error'
-    );
-
-    await startFallback();
-
-  }
-
-}
-
-
-/* =====================================================
-   FALLBACK FACING MODE
-===================================================== */
-
-async function startFallback() {
-
-  if (state.fallbackStarted) {
-    return;
-  }
-
-  state.fallbackStarted = true;
-
-  await stopScanner();
-
-
-  state.scanner =
-    new Html5Qrcode(
-      'reader'
-    );
-
-
-  const config = {
-
-    fps: 15,
-
-    qrbox: {
-      width: 260,
-      height: 260
-    },
-
-    aspectRatio: 1.0,
-
-    disableFlip: false
-
-  };
-
-
-  try {
-
-    await state.scanner.start(
-
-      {
-        facingMode:
-          'environment'
-      },
-
-      config,
-
-      onScanSuccess,
-
-      onScanError
-
-    );
-
-
-    state.running = true;
-
-    status.textContent =
-      'CAMERA AKTIF';
-
-    setMessage(
-      'Kamera aktif. Arahkan ke QR siswa.',
-      'info'
-    );
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    status.textContent =
-      'KAMERA GAGAL';
-
-    setMessage(
-      'Tidak dapat membuka kamera. Pastikan izin kamera diberikan dan halaman menggunakan HTTPS.',
-      'error'
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   STOP
-===================================================== */
-
-async function stopScanner() {
-
-  if (!state.scanner) {
-    return;
-  }
-
-
-  try {
-
-    if (state.running) {
-      await state.scanner.stop();
-    }
-
-  } catch (_) {}
-
-
-  try {
-    await state.scanner.clear();
-  } catch (_) {}
-
-
-  state.scanner = null;
-
-  state.running = false;
-
-}
-
-
-/* =====================================================
-   QR SUCCESS
-===================================================== */
-
-async function onScanSuccess(
-  decodedText
-) {
-
-  if (state.sent) {
-    return;
-  }
-
-
-  const code =
-    String(
-      decodedText || ''
-    )
-      .trim()
-      .replace(/\s+/g, '')
-      .toUpperCase();
-
-
-  if (!/^S\d+$/i.test(code)) {
-
-    setMessage(
-      'QR terbaca, tetapi bukan QR siswa yang valid.',
-      'error'
-    );
-
-    return;
-  }
-
-
-  state.sent = true;
-
-
-  setMessage(
-    'QR ' +
-    code +
-    ' terbaca. Mengirim ke sistem...',
-    'info'
-  );
-
-
-  await stopScanner();
-
-
-  if (
-    !window.opener ||
-    window.opener.closed
-  ) {
-
-    setMessage(
-      'Jendela aplikasi utama tidak ditemukan.',
-      'error'
-    );
-
-    state.sent = false;
-
-    return;
-  }
-
-
-  if (!state.returnOrigin) {
-
-    setMessage(
-      'Alamat aplikasi utama tidak ditemukan.',
-      'error'
-    );
-
-    state.sent = false;
-
-    return;
-  }
-
-
-  try {
-
-    window.opener.postMessage(
-      {
-        type:
-          'QR_ATTENDANCE',
-
-        studentId:
-          code
-      },
-
-      state.returnOrigin
-    );
-
-
-    status.textContent =
-      'TERKIRIM';
-
-
-    setMessage(
-      'QR berhasil dikirim. Absensi sedang diproses...',
-      'success'
-    );
-
-
-    setTimeout(
-      function() {
-
-        try {
-          window.close();
-        } catch (_) {}
-
-      },
-      900
-    );
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    state.sent = false;
-
-    setMessage(
-      'Gagal mengirim hasil scan.',
-      'error'
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   SCAN ERROR
-===================================================== */
-
-function onScanError(errorMessage) {
-
-  // Error scan normal tidak ditampilkan
-  // agar scanner tetap cepat.
-
-}
-
-
-/* =====================================================
-   CAMERA SWITCH
-===================================================== */
-
-switchBtn.addEventListener(
-  'click',
-  async function() {
-
-    if (
-      !state.cameras.length
-    ) {
-      await loadCameras();
-      return;
-    }
-
-
-    const current =
-      cameraSelect.value;
-
-
-    const index =
-      state.cameras.findIndex(
-        function(c) {
-          return c.id === current;
-        }
-      );
-
-
-    const nextIndex =
-      index >= 0
-        ? (index + 1) %
-          state.cameras.length
-        : 0;
-
-
-    const next =
-      state.cameras[nextIndex];
-
-
-    cameraSelect.value =
-      next.id;
-
-
-    await startCamera(
-      next.id
-    );
-
-  }
-);
-
-
-cameraSelect.addEventListener(
-  'change',
-  async function() {
-
-    if (
-      !cameraSelect.value
-    ) {
-      return;
-    }
-
-
-    await startCamera(
-      cameraSelect.value
-    );
-
-  }
-);
-
-
-/* =====================================================
-   START
-===================================================== */
-
-state.returnOrigin =
-  getReturnOrigin();
-
-
-if (!state.returnOrigin) {
-
-  setMessage(
-    'Scanner dibuka tanpa aplikasi utama. Buka scanner melalui tombol SCAN QR pada aplikasi absensi.',
-    'error'
-  );
-
-}
-
-
-window.addEventListener(
-  'load',
-  function() {
-
-    loadCameras();
-
-  }
-);
-
-
-/* =====================================================
-   CLEANUP
-===================================================== */
-
-window.addEventListener(
-  'beforeunload',
-  function() {
-
-    stopScanner();
-
-  }
-);
-
-</script>
+<?!= include('JavaScript'); ?>
 
 </body>
 </html>
