@@ -1,48 +1,1426 @@
 <!doctype html>
 <html lang="id">
 <head>
-@@ -7,27 +8,33 @@
-<meta name="theme-color" content="#0f766e">
-<title>SILELET QR Scanner</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#071f1d;color:#fff;font-family:system-ui,Arial}.app{max-width:760px;min-height:100vh;margin:auto;background:#0b2926}
-header{background:#0f766e;padding:16px}h1{font-size:20px;margin:0}.sub{font-size:12px;margin-top:4px}
-main{padding:12px}.stage{position:relative;background:#000;border-radius:16px;overflow:hidden;aspect-ratio:3/4;max-height:70vh;min-height:300px}
-video{width:100%;height:100%;object-fit:cover}.frame{position:absolute;inset:22% 14%;border:3px solid #fff;border-radius:20px;box-shadow:0 0 0 9999px #0004;pointer-events:none}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-button,select{width:100%;min-height:48px;border:0;border-radius:11px;padding:10px;font-size:15px}
-button{background:#14b8a6;color:#fff;font-weight:700}.secondary{background:#164a45}.danger{background:#a82720}.wide{grid-column:1/-1}select{background:white;color:#111}
-.status,.result{padding:12px;margin-top:10px;border-radius:11px;background:#103b36;font-size:13px;word-break:break-word}.result{background:#061714;font-weight:700}.hide{display:none}
-*{box-sizing:border-box}
-:root{--bg:#06130f;--panel:#0d2119;--green:#16b891;--mint:#a3f4d4;--gold:#d8bd7a;--text:#f4fbf7;--muted:#91ada0;--line:rgba(190,235,213,.13);--danger:#ff727a;--shadow:0 25px 70px rgba(0,0,0,.4)}
-html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:radial-gradient(ellipse at 50% -10%,#1d6046 0%,#0a251a 38%,#030a07 100%);color:var(--text)}
-body{padding:0}.app{max-width:760px;min-height:100vh;margin:auto;background:linear-gradient(160deg,rgba(8,30,21,.97),rgba(4,15,10,.99));border-inline:1px solid rgba(190,235,213,.07);overflow:hidden}
-header{display:flex;align-items:center;gap:14px;padding:22px 20px 20px;background:linear-gradient(120deg,rgba(18,91,62,.65),rgba(8,35,24,.35));border-bottom:1px solid var(--line);backdrop-filter:blur(20px)}
-.logo{width:52px;height:52px;flex:0 0 52px;border-radius:18px;display:grid;place-items:center;font-size:25px;background:linear-gradient(145deg,#28d6a5,#087354);border:1px solid rgba(255,255,255,.22);box-shadow:0 9px 30px rgba(22,184,145,.25)}
-h1{font-size:20px;letter-spacing:-.5px;font-weight:850;margin:0}.sub{font-size:11px;color:#b3d2c2;margin-top:6px;line-height:1.5}
-main{padding:18px 17px 30px}.hero{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 2px 13px}.eyebrow{font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}.live{font-size:10px;color:var(--mint);background:rgba(22,184,145,.1);border:1px solid rgba(22,184,145,.25);border-radius:999px;padding:6px 10px;white-space:nowrap}
-.stage{position:relative;background:#020805;border-radius:26px;overflow:hidden;aspect-ratio:3/4;max-height:68vh;min-height:300px;border:1px solid rgba(163,244,212,.2);box-shadow:var(--shadow)}.stage:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.12),transparent 22%,transparent 72%,rgba(0,0,0,.4))}
-video{width:100%;height:100%;object-fit:cover;display:block}.frame{position:absolute;z-index:2;inset:22% 14%;border:1.5px solid rgba(255,255,255,.9);border-radius:24px;box-shadow:0 0 0 9999px rgba(0,0,0,.4),inset 0 0 22px rgba(22,184,145,.12);pointer-events:none}.frame:before,.frame:after{content:"";position:absolute;width:34px;height:34px;border:solid #49e6b6}.frame:before{top:-2px;left:-2px;border-width:4px 0 0 4px;border-radius:14px 0 0}.frame:after{bottom:-2px;right:-2px;border-width:0 4px 4px 0;border-radius:0 0 14px}
-.hint{position:absolute;z-index:3;left:50%;bottom:17px;transform:translateX(-50%);white-space:nowrap;padding:9px 15px;border-radius:999px;background:rgba(2,18,11,.8);border:1px solid rgba(255,255,255,.16);font-size:11px;color:#e7fff5;backdrop-filter:blur(12px)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}button,select{width:100%;min-height:50px;border:1px solid var(--line);border-radius:15px;padding:12px 14px;font:inherit;font-size:13px;outline:none;transition:transform .15s,filter .15s}button{background:linear-gradient(135deg,#1bc99c,#087b5f);color:#fff;font-weight:800;cursor:pointer;box-shadow:0 9px 24px rgba(8,121,93,.2)}button:active{transform:scale(.98);filter:brightness(.93)}.secondary{background:linear-gradient(145deg,#153a2b,#10271d);color:#e4f8ed;box-shadow:none;border-color:var(--line)}.danger{background:rgba(255,114,122,.08);color:#ff9da2;border-color:rgba(255,114,122,.25);box-shadow:none}.wide{grid-column:1/-1}select{background:#10271d;color:var(--text)}select option{background:#10271d;color:#fff}
-.section-label{font-size:10px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin:22px 3px 9px;display:flex;align-items:center;gap:10px}.section-label:after{content:"";height:1px;background:var(--line);flex:1}.status,.result{padding:15px 16px;margin-top:9px;border-radius:17px;background:linear-gradient(145deg,#112c20,#0b1e15);border:1px solid var(--line);font-size:13px;line-height:1.55;word-break:break-word;box-shadow:0 8px 24px rgba(0,0,0,.16)}.status{color:#d3e9dc}.result{background:linear-gradient(135deg,rgba(13,119,86,.2),#0b2117);border-color:rgba(22,184,145,.22);font-weight:750;color:var(--mint)}.hide{display:none}
-@media(min-width:700px){.app{box-shadow:0 0 100px rgba(0,0,0,.35)}main{padding:22px 22px 35px}}@media(max-width:430px){header{padding:17px 15px}.logo{width:46px;height:46px;flex-basis:46px;border-radius:16px}h1{font-size:18px}main{padding:14px 12px 25px}.stage{border-radius:23px;min-height:285px}.grid{gap:8px}button,select{min-height:47px;padding:11px;font-size:12px}.hint{font-size:10px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+
+  <title>SILELET QR Scanner</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #06130f;
+      --panel: #0d2119;
+      --green: #16b891;
+      --mint: #a3f4d4;
+      --gold: #d8bd7a;
+      --text: #f4fbf7;
+      --muted: #91ada0;
+      --line: rgba(190,235,213,.13);
+      --danger: #ff727a;
+      --shadow: 0 25px 70px rgba(0,0,0,.4);
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+      background:
+        radial-gradient(
+          ellipse at 50% -10%,
+          #1d6046 0%,
+          #0a251a 38%,
+          #030a07 100%
+        );
+
+      color: var(--text);
+    }
+
+    body {
+      padding: 0;
+    }
+
+    .app {
+      max-width: 760px;
+      min-height: 100vh;
+      margin: auto;
+
+      background:
+        linear-gradient(
+          160deg,
+          rgba(8,30,21,.97),
+          rgba(4,15,10,.99)
+        );
+
+      border-inline: 1px solid rgba(190,235,213,.07);
+      overflow: hidden;
+    }
+
+    /* HEADER */
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      padding: 22px 20px 20px;
+
+      background:
+        linear-gradient(
+          120deg,
+          rgba(18,91,62,.65),
+          rgba(8,35,24,.35)
+        );
+
+      border-bottom: 1px solid var(--line);
+
+      backdrop-filter: blur(20px);
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      flex: 0 0 52px;
+
+      border-radius: 18px;
+
+      display: grid;
+      place-items: center;
+
+      font-size: 25px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #28d6a5,
+          #087354
+        );
+
+      border: 1px solid rgba(255,255,255,.22);
+
+      box-shadow:
+        0 9px 30px rgba(22,184,145,.25);
+    }
+
+    h1 {
+      font-size: 20px;
+      letter-spacing: -.5px;
+      font-weight: 850;
+      margin: 0;
+    }
+
+    .sub {
+      font-size: 11px;
+      color: #b3d2c2;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    /* MAIN */
+
+    main {
+      padding: 18px 17px 30px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 12px;
+
+      margin: 0 2px 13px;
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      font-weight: 900;
+
+      letter-spacing: .16em;
+      text-transform: uppercase;
+
+      color: var(--gold);
+    }
+
+    .live {
+      font-size: 10px;
+      color: var(--mint);
+
+      background: rgba(22,184,145,.1);
+
+      border: 1px solid rgba(22,184,145,.25);
+
+      border-radius: 999px;
+
+      padding: 6px 10px;
+
+      white-space: nowrap;
+    }
+
+    /* CAMERA */
+
+    .stage {
+      position: relative;
+
+      background: #020805;
+
+      border-radius: 26px;
+
+      overflow: hidden;
+
+      aspect-ratio: 3 / 4;
+
+      max-height: 68vh;
+
+      min-height: 300px;
+
+      border: 1px solid rgba(163,244,212,.2);
+
+      box-shadow: var(--shadow);
+    }
+
+    .stage::after {
+      content: "";
+
+      position: absolute;
+      inset: 0;
+
+      pointer-events: none;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(0,0,0,.12),
+          transparent 22%,
+          transparent 72%,
+          rgba(0,0,0,.4)
+        );
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+
+      display: block;
+
+      background: #000;
+    }
+
+    /* QR FRAME */
+
+    .frame {
+      position: absolute;
+
+      z-index: 2;
+
+      inset: 22% 14%;
+
+      border: 1.5px solid rgba(255,255,255,.9);
+
+      border-radius: 24px;
+
+      box-shadow:
+        0 0 0 9999px rgba(0,0,0,.4),
+        inset 0 0 22px rgba(22,184,145,.12);
+
+      pointer-events: none;
+    }
+
+    .frame::before,
+    .frame::after {
+      content: "";
+
+      position: absolute;
+
+      width: 34px;
+      height: 34px;
+
+      border: solid #49e6b6;
+    }
+
+    .frame::before {
+      top: -2px;
+      left: -2px;
+
+      border-width: 4px 0 0 4px;
+
+      border-radius: 14px 0 0 0;
+    }
+
+    .frame::after {
+      bottom: -2px;
+      right: -2px;
+
+      border-width: 0 4px 4px 0;
+
+      border-radius: 0 0 14px 0;
+    }
+
+    .hint {
+      position: absolute;
+
+      z-index: 3;
+
+      left: 50%;
+      bottom: 17px;
+
+      transform: translateX(-50%);
+
+      white-space: nowrap;
+
+      padding: 9px 15px;
+
+      border-radius: 999px;
+
+      background: rgba(2,18,11,.8);
+
+      border: 1px solid rgba(255,255,255,.16);
+
+      font-size: 11px;
+
+      color: #e7fff5;
+
+      backdrop-filter: blur(12px);
+    }
+
+    /* BUTTON */
+
+    .grid {
+      display: grid;
+
+      grid-template-columns: 1fr 1fr;
+
+      gap: 10px;
+
+      margin-top: 14px;
+    }
+
+    button,
+    select {
+      width: 100%;
+
+      min-height: 50px;
+
+      border: 1px solid var(--line);
+
+      border-radius: 15px;
+
+      padding: 12px 14px;
+
+      font: inherit;
+
+      font-size: 13px;
+
+      outline: none;
+
+      transition:
+        transform .15s,
+        filter .15s;
+    }
+
+    button {
+      background:
+        linear-gradient(
+          135deg,
+          #1bc99c,
+          #087b5f
+        );
+
+      color: #fff;
+
+      font-weight: 800;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 9px 24px rgba(8,121,93,.2);
+    }
+
+    button:active {
+      transform: scale(.98);
+      filter: brightness(.93);
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .secondary {
+      background:
+        linear-gradient(
+          145deg,
+          #153a2b,
+          #10271d
+        );
+
+      color: #e4f8ed;
+
+      box-shadow: none;
+
+      border-color: var(--line);
+    }
+
+    .danger {
+      background: rgba(255,114,122,.08);
+
+      color: #ff9da2;
+
+      border-color: rgba(255,114,122,.25);
+
+      box-shadow: none;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    select {
+      background: #10271d;
+      color: var(--text);
+    }
+
+    select option {
+      background: #10271d;
+      color: #fff;
+    }
+
+    /* STATUS */
+
+    .section-label {
+      font-size: 10px;
+
+      font-weight: 900;
+
+      letter-spacing: .15em;
+
+      text-transform: uppercase;
+
+      color: var(--gold);
+
+      margin: 22px 3px 9px;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+    }
+
+    .section-label::after {
+      content: "";
+
+      height: 1px;
+
+      background: var(--line);
+
+      flex: 1;
+    }
+
+    .status,
+    .result {
+      padding: 15px 16px;
+
+      margin-top: 9px;
+
+      border-radius: 17px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #112c20,
+          #0b1e15
+        );
+
+      border: 1px solid var(--line);
+
+      font-size: 13px;
+
+      line-height: 1.55;
+
+      word-break: break-word;
+
+      box-shadow:
+        0 8px 24px rgba(0,0,0,.16);
+    }
+
+    .status {
+      color: #d3e9dc;
+    }
+
+    .result {
+      background:
+        linear-gradient(
+          135deg,
+          rgba(13,119,86,.2),
+          #0b2117
+        );
+
+      border-color: rgba(22,184,145,.22);
+
+      font-weight: 750;
+
+      color: var(--mint);
+    }
+
+    .success {
+      color: #8affce;
+    }
+
+    .error {
+      color: #ff9da2;
+    }
+
+    .hide {
+      display: none !important;
+    }
+
+    /* MOBILE */
+
+    @media (min-width: 700px) {
+
+      .app {
+        box-shadow:
+          0 0 100px rgba(0,0,0,.35);
+      }
+
+      main {
+        padding: 22px 22px 35px;
+      }
+    }
+
+    @media (max-width: 430px) {
+
+      header {
+        padding: 17px 15px;
+      }
+
+      .logo {
+        width: 46px;
+        height: 46px;
+
+        flex-basis: 46px;
+
+        border-radius: 16px;
+      }
+
+      h1 {
+        font-size: 18px;
+      }
+
+      main {
+        padding: 14px 12px 25px;
+      }
+
+      .stage {
+        border-radius: 23px;
+        min-height: 285px;
+      }
+
+      .grid {
+        gap: 8px;
+      }
+
+      button,
+      select {
+        min-height: 47px;
+        padding: 11px;
+        font-size: 12px;
+      }
+
+      .hint {
+        font-size: 10px;
+      }
+    }
+  </style>
 </head>
-<body><div class="app">
-<header><h1>📷 SILELET QR Scanner</h1><div class="sub">QR 2D • Kamera depan/belakang • Android & iPhone</div></header>
-<header><div class="logo">⌗</div><div><h1>SILELET <span style="color:#75e7bf">Scanner</span></h1><div class="sub">SMART ATTENDANCE · QR 2D · ANDROID & IPHONE</div></div></header>
-<main>
-<div class="stage"><video id="video" autoplay muted playsinline></video><div class="frame"></div></div>
-<div class="hero"><div class="eyebrow">Pemindai Kehadiran</div><div class="live">● LIVE SCAN</div></div><div class="stage"><video id="video" autoplay muted playsinline></video><div class="frame"></div><div class="hint">Arahkan QR tepat di dalam bingkai</div></div>
-<div class="grid">
-<button id="start">▶ Mulai Kamera</button><button id="flip" class="secondary">🔄 Depan / Belakang</button>
-<select id="camera" class="wide"><option value="">Pilih kamera</option></select>
-<button id="stop" class="danger">⏹ Stop</button><button id="photo" class="secondary">📸 Scan Foto</button><button id="soundTest" class="wide secondary">🔊 TES SUARA ABSENSI</button>
-<input id="file" class="hide" type="file" accept="image/*" capture="environment">
+
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+
+    <div class="logo">⌗</div>
+
+    <div>
+      <h1>
+        SILELET
+        <span style="color:#75e7bf">
+          Scanner
+        </span>
+      </h1>
+
+      <div class="sub">
+        SMART ATTENDANCE · QR 2D · ANDROID & IPHONE
+      </div>
+    </div>
+
+  </header>
+
+
+  <main>
+
+    <!-- TITLE -->
+    <div class="hero">
+
+      <div class="eyebrow">
+        Pemindai Kehadiran
+      </div>
+
+      <div class="live">
+        ● LIVE SCAN
+      </div>
+
+    </div>
+
+
+    <!-- CAMERA -->
+    <div class="stage">
+
+      <video
+        id="video"
+        autoplay
+        muted
+        playsinline>
+      </video>
+
+      <div class="frame"></div>
+
+      <div class="hint">
+        Arahkan QR tepat di dalam bingkai
+      </div>
+
+    </div>
+
+
+    <!-- CONTROL -->
+    <div class="grid">
+
+      <button id="start">
+        ▶ Mulai Kamera
+      </button>
+
+      <button
+        id="flip"
+        class="secondary">
+        🔄 Depan / Belakang
+      </button>
+
+
+      <select
+        id="camera"
+        class="wide">
+
+        <option value="">
+          Pilih kamera
+        </option>
+
+      </select>
+
+
+      <button
+        id="stop"
+        class="danger">
+
+        ⏹ Stop
+
+      </button>
+
+
+      <button
+        id="photo"
+        class="secondary">
+
+        📸 Scan Foto
+
+      </button>
+
+
+      <button
+        id="soundTest"
+        class="wide secondary">
+
+        🔊 TES SUARA ABSENSI
+
+      </button>
+
+    </div>
+
+
+    <!-- FILE FOTO -->
+    <input
+      id="file"
+      class="hide"
+      type="file"
+      accept="image/*"
+      capture="environment">
+
+
+    <!-- STATUS -->
+    <div class="section-label">
+      Status Sistem
+    </div>
+
+    <div
+      id="status"
+      class="status">
+
+      Siap. Tekan Mulai Kamera.
+
+    </div>
+
+
+    <!-- RESULT -->
+    <div
+      id="result"
+      class="result">
+
+      Belum ada QR terbaca.
+
+    </div>
+
+  </main>
+
 </div>
-<div id="status" class="status">Siap. Tekan Mulai Kamera.</div><div id="result" class="result">Belum ada QR terbaca.</div>
-<div class="section-label">Status Sistem</div><div id="status" class="status">Siap. Tekan Mulai Kamera.</div><div id="result" class="result">Belum ada QR terbaca.</div>
-</main></div>
+
+
+<!-- ZXING -->
 <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/umd/zxing-browser.min.js"></script>
+
+
 <script>
+
+"use strict";
+
+
+/* =========================
+   ELEMENT
+========================= */
+
+const video =
+  document.getElementById("video");
+
+const startBtn =
+  document.getElementById("start");
+
+const stopBtn =
+  document.getElementById("stop");
+
+const flipBtn =
+  document.getElementById("flip");
+
+const cameraSelect =
+  document.getElementById("camera");
+
+const photoBtn =
+  document.getElementById("photo");
+
+const fileInput =
+  document.getElementById("file");
+
+const soundBtn =
+  document.getElementById("soundTest");
+
+const statusBox =
+  document.getElementById("status");
+
+const resultBox =
+  document.getElementById("result");
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let codeReader = null;
+
+let currentDeviceId = "";
+
+let currentFacing = "environment";
+
+let scanning = false;
+
+let lastResult = "";
+
+let lastScanTime = 0;
+
+
+/* =========================
+   STATUS
+========================= */
+
+function setStatus(message, type = "") {
+
+  statusBox.textContent = message;
+
+  statusBox.className =
+    "status " + type;
+}
+
+
+/* =========================
+   RESULT
+========================= */
+
+function setResult(message, type = "") {
+
+  resultBox.textContent = message;
+
+  resultBox.className =
+    "result " + type;
+}
+
+
+/* =========================
+   BEEP
+========================= */
+
+function beep() {
+
+  try {
+
+    const AudioContext =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if (!AudioContext) return;
+
+    const ctx =
+      new AudioContext();
+
+    const oscillator =
+      ctx.createOscillator();
+
+    const gain =
+      ctx.createGain();
+
+    oscillator.frequency.value =
+      880;
+
+    oscillator.type =
+      "sine";
+
+    gain.gain.value =
+      0.08;
+
+    oscillator.connect(gain);
+
+    gain.connect(ctx.destination);
+
+    oscillator.start();
+
+    oscillator.stop(
+      ctx.currentTime + 0.12
+    );
+
+  } catch (error) {
+
+    console.log(
+      "Audio error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================
+   INIT ZXING
+========================= */
+
+function initScanner() {
+
+  if (
+    typeof ZXingBrowser ===
+    "undefined"
+  ) {
+
+    setStatus(
+      "Library QR Scanner gagal dimuat.",
+      "error"
+    );
+
+    return false;
+  }
+
+  if (!codeReader) {
+
+    codeReader =
+      new ZXingBrowser.BrowserMultiFormatReader();
+
+  }
+
+  return true;
+}
+
+
+/* =========================
+   LOAD CAMERA
+========================= */
+
+async function loadCameras() {
+
+  try {
+
+    if (!initScanner()) return;
+
+    const devices =
+      await ZXingBrowser.BrowserCodeReader
+        .listVideoInputDevices();
+
+    cameraSelect.innerHTML =
+      '<option value="">Pilih kamera</option>';
+
+    if (!devices.length) {
+
+      setStatus(
+        "Kamera tidak ditemukan.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    devices.forEach(
+      (device, index) => {
+
+        const option =
+          document.createElement("option");
+
+        option.value =
+          device.deviceId;
+
+        option.textContent =
+          device.label ||
+          `Kamera ${index + 1}`;
+
+        cameraSelect.appendChild(
+          option
+        );
+
+      }
+    );
+
+
+    /* pilih kamera belakang */
+
+    const backCamera =
+      devices.find(
+        device =>
+          /back|rear|environment/i
+            .test(device.label)
+      );
+
+
+    if (backCamera) {
+
+      currentDeviceId =
+        backCamera.deviceId;
+
+      cameraSelect.value =
+        currentDeviceId;
+
+    } else {
+
+      currentDeviceId =
+        devices[0].deviceId;
+
+      cameraSelect.value =
+        currentDeviceId;
+
+    }
+
+
+    setStatus(
+      `${devices.length} kamera ditemukan.`
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    setStatus(
+      "Tidak dapat membaca daftar kamera. Izinkan akses kamera pada browser.",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================
+   START CAMERA
+========================= */
+
+async function startCamera() {
+
+  try {
+
+    if (!initScanner()) return;
+
+
+    stopCamera();
+
+
+    setStatus(
+      "Meminta izin kamera..."
+    );
+
+
+    /*
+      Jika kamera sudah dipilih,
+      gunakan deviceId.
+    */
+
+    let deviceId =
+      currentDeviceId;
+
+
+    /*
+      Kalau belum ada device,
+      gunakan facingMode.
+    */
+
+    if (!deviceId) {
+
+      const constraints = {
+        video: {
+          facingMode: {
+            ideal:
+              currentFacing
+          }
+        }
+      };
+
+
+      const stream =
+        await navigator.mediaDevices
+          .getUserMedia(
+            constraints
+          );
+
+
+      /*
+        Ambil device kamera aktif
+      */
+
+      const tracks =
+        stream.getVideoTracks();
+
+      if (tracks.length) {
+
+        const settings =
+          tracks[0].getSettings();
+
+        deviceId =
+          settings.deviceId;
+
+      }
+
+
+      tracks.forEach(
+        track => track.stop()
+      );
+
+    }
+
+
+    scanning = true;
+
+
+    setStatus(
+      "Kamera aktif. Arahkan QR ke bingkai..."
+    );
+
+
+    const selectedDevice =
+      deviceId || undefined;
+
+
+    await codeReader.decodeFromVideoDevice(
+
+      selectedDevice,
+
+      video,
+
+      (result, error) => {
+
+        if (!scanning) return;
+
+
+        if (result) {
+
+          const text =
+            result.getText();
+
+
+          const now =
+            Date.now();
+
+
+          /*
+            Hindari QR yang sama
+            terbaca berkali-kali.
+          */
+
+          if (
+            text === lastResult &&
+            now - lastScanTime < 2500
+          ) {
+
+            return;
+
+          }
+
+
+          lastResult =
+            text;
+
+          lastScanTime =
+            now;
+
+
+          beep();
+
+
+          setResult(
+            "QR TERBACA: " + text,
+            "success"
+          );
+
+
+          setStatus(
+            "QR berhasil dipindai."
+          );
+
+
+          /*
+            Kirim ke parent/app
+            jika scanner dibuka
+            melalui iframe.
+          */
+
+          sendToParent(text);
+
+
+          /*
+            Event custom untuk
+            integrasi aplikasi lain.
+          */
+
+          window.dispatchEvent(
+            new CustomEvent(
+              "qr-scanned",
+              {
+                detail: {
+                  text: text
+                }
+              }
+            )
+          );
+
+        }
+
+      }
+
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Camera error:",
+      error
+    );
+
+    scanning = false;
+
+
+    let message =
+      "Kamera tidak dapat dibuka.";
+
+
+    if (
+      error.name ===
+      "NotAllowedError"
+    ) {
+
+      message =
+        "Akses kamera ditolak. Izinkan kamera pada browser.";
+
+    }
+
+    else if (
+      error.name ===
+      "NotFoundError"
+    ) {
+
+      message =
+        "Kamera tidak ditemukan.";
+
+    }
+
+    else if (
+      error.name ===
+      "NotReadableError"
+    ) {
+
+      message =
+        "Kamera sedang digunakan aplikasi lain.";
+
+    }
+
+    else if (
+      location.protocol !==
+      "https:" &&
+      location.hostname !==
+      "localhost"
+    ) {
+
+      message =
+        "Kamera membutuhkan HTTPS. Gunakan GitHub Pages atau HTTPS.";
+
+    }
+
+
+    setStatus(
+      message,
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================
+   STOP CAMERA
+========================= */
+
+function stopCamera() {
+
+  scanning = false;
+
+
+  try {
+
+    if (codeReader) {
+
+      codeReader.reset();
+
+    }
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+
+  if (video.srcObject) {
+
+    video.srcObject
+      .getTracks()
+      .forEach(
+        track => track.stop()
+      );
+
+    video.srcObject = null;
+
+  }
+
+
+  setStatus(
+    "Kamera dihentikan."
+  );
+
+}
+
+
+/* =========================
+   FLIP CAMERA
+========================= */
+
+async function flipCamera() {
+
+  currentDeviceId = "";
+
+  currentFacing =
+    currentFacing ===
+    "environment"
+      ? "user"
+      : "environment";
+
+
+  setStatus(
+    currentFacing ===
+    "environment"
+      ? "Mencoba kamera belakang..."
+      : "Mencoba kamera depan..."
+  );
+
+
+  await startCamera();
+
+}
+
+
+/* =========================
+   SELECT CAMERA
+========================= */
+
+cameraSelect.addEventListener(
+  "change",
+  async function () {
+
+    currentDeviceId =
+      this.value;
+
+
+    if (!currentDeviceId) {
+
+      return;
+
+    }
+
+
+    await startCamera();
+
+  }
+);
+
+
+/* =========================
+   BUTTON EVENTS
+========================= */
+
+startBtn.addEventListener(
+  "click",
+  startCamera
+);
+
+
+stopBtn.addEventListener(
+  "click",
+  stopCamera
+);
+
+
+flipBtn.addEventListener(
+  "click",
+  flipCamera
+);
+
+
+/* =========================
+   PHOTO SCAN
+========================= */
+
+photoBtn.addEventListener(
+  "click",
+  function () {
+
+    fileInput.click();
+
+  }
+);
+
+
+fileInput.addEventListener(
+  "change",
+  async function () {
+
+    const file =
+      this.files[0];
+
+    if (!file) return;
+
+
+    try {
+
+      if (!initScanner()) return;
+
+
+      setStatus(
+        "Membaca QR dari foto..."
+      );
+
+
+      const url =
+        URL.createObjectURL(file);
+
+
+      const image =
+        new Image();
+
+
+      image.onload =
+        async function () {
+
+          try {
+
+            /*
+              Decode QR dari file.
+            */
+
+            const result =
+              await codeReader
+                .decodeFromImageUrl(
+                  url
+                );
+
+
+            if (result) {
+
+              const text =
+                result.getText();
+
+
+              setResult(
+                "QR FOTO TERBACA: " +
+                text,
+                "success"
+              );
+
+
+              setStatus(
+                "QR dari foto berhasil dibaca."
+              );
+
+
+              beep();
+
+
+              sendToParent(text);
+
+            }
+
+          } catch (error) {
+
+            console.error(error);
+
+
+            setResult(
+              "QR tidak ditemukan pada foto.",
+       
