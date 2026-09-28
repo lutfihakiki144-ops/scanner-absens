@@ -1,872 +1,682 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-  <base target="_top">
 
   <meta charset="UTF-8">
+
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+    content="width=device-width, initial-scale=1, maximum-scale=1"
   >
 
-  <meta name="theme-color" content="#0f766e">
+  <meta
+    name="theme-color"
+    content="#0f766e"
+  >
 
-  <title>ABSENSI SISWA</title>
+  <title>QR Scanner - Absensi</title>
 
-  <!-- QR GENERATOR -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-  <?!= include('style'); ?>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+
+    body {
+
+      min-height: 100vh;
+
+      color: white;
+
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      background:
+
+        radial-gradient(
+          circle at 10% 10%,
+          rgba(20,184,166,.28),
+          transparent 35%
+        ),
+
+        radial-gradient(
+          circle at 90% 90%,
+          rgba(14,165,233,.18),
+          transparent 35%
+        ),
+
+        #061513;
+
+      padding: 14px;
+
+    }
+
+
+    .app {
+
+      width:
+        min(
+          100%,
+          520px
+        );
+
+      min-height:
+        calc(100vh - 28px);
+
+      margin:
+        auto;
+
+      padding: 18px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.12);
+
+      border-radius: 28px;
+
+      background:
+        rgba(255,255,255,.065);
+
+      box-shadow:
+        0 30px 80px
+        rgba(0,0,0,.35);
+
+      backdrop-filter:
+        blur(25px);
+
+    }
+
+
+    .top {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 12px;
+
+      margin-bottom: 18px;
+
+    }
+
+
+    .brand {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+    }
+
+
+    .logo {
+
+      width: 44px;
+      height: 44px;
+
+      display: grid;
+
+      place-items: center;
+
+      border-radius: 14px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #19c6b2,
+          #0f766e
+        );
+
+      font-weight: 900;
+
+    }
+
+
+    .brand strong {
+
+      display: block;
+
+      font-size: 14px;
+
+    }
+
+
+    .brand small {
+
+      display: block;
+
+      margin-top: 3px;
+
+      color: #8da9a4;
+
+      font-size: 10px;
+
+    }
+
+
+    .online {
+
+      color: #86efac;
+
+      font-size: 9px;
+
+      font-weight: 900;
+
+    }
+
+
+    .camera-card {
+
+      padding: 10px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.10);
+
+      border-radius: 22px;
+
+      background:
+        rgba(0,0,0,.20);
+
+      overflow: hidden;
+
+    }
+
+
+    #reader {
+
+      width: 100%;
+
+    }
+
+
+    #reader video {
+
+      border-radius: 17px !important;
+
+      object-fit: cover !important;
+
+    }
+
+
+    #reader__dashboard {
+
+      display: none !important;
+
+    }
+
+
+    .controls {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr auto;
+
+      gap: 8px;
+
+      margin-top: 12px;
+
+    }
+
+
+    select,
+    button {
+
+      min-height: 45px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.12);
+
+      border-radius: 13px;
+
+      color: white;
+
+      background:
+        rgba(255,255,255,.07);
+
+      font: inherit;
+
+    }
+
+
+    select {
+
+      width: 100%;
+
+      padding:
+        0 12px;
+
+    }
+
+
+    select option {
+
+      color: #111;
+
+      background: white;
+
+    }
+
+
+    button {
+
+      padding:
+        0 15px;
+
+      cursor: pointer;
+
+      font-size: 11px;
+
+      font-weight: 900;
+
+    }
+
+
+    button.primary {
+
+      background:
+        linear-gradient(
+          135deg,
+          #19c6b2,
+          #0f766e
+        );
+
+    }
+
+
+    button:disabled {
+
+      opacity: .5;
+
+      cursor: not-allowed;
+
+    }
+
+
+    .status {
+
+      margin-top: 13px;
+
+      padding: 13px;
+
+      border-radius: 15px;
+
+      color: #a9c0bc;
+
+      background:
+        rgba(255,255,255,.045);
+
+      font-size: 11px;
+
+      line-height: 1.5;
+
+      text-align: center;
+
+    }
+
+
+    .status.success {
+
+      color: #86efac;
+
+      background:
+        rgba(34,197,94,.08);
+
+    }
+
+
+    .status.error {
+
+      color: #fda4af;
+
+      background:
+        rgba(244,63,94,.08);
+
+    }
+
+
+    .tip {
+
+      margin-top: 14px;
+
+      color: #718d88;
+
+      font-size: 10px;
+
+      line-height: 1.6;
+
+      text-align: center;
+
+    }
+
+
+    .loading {
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 100;
+
+      display: none;
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 20px;
+
+      background:
+        rgba(0,0,0,.55);
+
+      backdrop-filter:
+        blur(10px);
+
+    }
+
+
+    .loading.show {
+
+      display: flex;
+
+    }
+
+
+    .loading-box {
+
+      padding: 25px;
+
+      border-radius: 20px;
+
+      text-align: center;
+
+      background:
+        rgba(15,30,27,.94);
+
+      border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    }
+
+
+    .spinner {
+
+      width: 35px;
+      height: 35px;
+
+      margin:
+        0 auto 12px;
+
+      border:
+        3px solid
+        rgba(255,255,255,.15);
+
+      border-top-color:
+        #14b8a6;
+
+      border-radius: 50%;
+
+      animation:
+        spin .7s linear infinite;
+
+    }
+
+
+    @keyframes spin {
+
+      to {
+        transform:
+          rotate(360deg);
+      }
+
+    }
+
+
+    .success-screen {
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 200;
+
+      display: none;
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 25px;
+
+      background:
+        rgba(3,17,15,.96);
+
+    }
+
+
+    .success-screen.show {
+
+      display: flex;
+
+    }
+
+
+    .success-card {
+
+      width:
+        min(
+          100%,
+          360px
+        );
+
+      padding: 30px;
+
+      border-radius: 28px;
+
+      text-align: center;
+
+      background:
+        rgba(255,255,255,.07);
+
+      border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    }
+
+
+    .success-icon {
+
+      width: 75px;
+      height: 75px;
+
+      margin:
+        0 auto 18px;
+
+      display: grid;
+
+      place-items: center;
+
+      border-radius: 25px;
+
+      color: #86efac;
+
+      background:
+        rgba(34,197,94,.12);
+
+      font-size: 38px;
+
+      font-weight: 900;
+
+    }
+
+
+    .success-card h2 {
+
+      margin: 0;
+
+      font-size: 23px;
+
+    }
+
+
+    .success-card p {
+
+      margin:
+        8px 0 0;
+
+      color: #9ab5b0;
+
+      font-size: 12px;
+
+      line-height: 1.6;
+
+    }
+
+
+    @media (max-width: 420px) {
+
+      body {
+        padding: 8px;
+      }
+
+      .app {
+        min-height:
+          calc(100vh - 16px);
+
+        border-radius: 22px;
+
+        padding: 12px;
+      }
+
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+  </style>
+
 </head>
+
 
 <body>
 
-<!-- =====================================================
-     LOADING
-====================================================== -->
-<div id="loadingOverlay" class="loading-overlay hidden">
-  <div class="loading-card glass">
-    <div class="spinner"></div>
-    <div id="loadingText">Memproses...</div>
-  </div>
-</div>
+<div class="app">
 
-
-<!-- =====================================================
-     TOAST
-====================================================== -->
-<div id="toast" class="toast">
-  <div id="toastIcon" class="toast-icon">✓</div>
-
-  <div class="toast-content">
-    <strong id="toastTitle">Berhasil</strong>
-    <span id="toastText">Data berhasil diproses.</span>
-  </div>
-
-  <button id="toastClose" type="button">×</button>
-</div>
-
-
-<!-- =====================================================
-     LOGIN
-====================================================== -->
-<section id="loginView" class="login-view">
-
-  <div class="login-glow glow-one"></div>
-  <div class="login-glow glow-two"></div>
-
-  <div class="login-card glass">
-
-    <div class="brand-icon">
-      <span>✓</span>
-    </div>
-
-    <div class="system-status">
-      <span class="status-dot"></span>
-      SYSTEM ONLINE
-    </div>
-
-    <h1>ABSENSI SISWA</h1>
-
-    <p class="login-subtitle">
-      Sistem Informasi Kehadiran Siswa
-    </p>
-
-    <div class="login-form">
-
-      <label for="loginUser">
-        Username
-      </label>
-
-      <div class="input-glass">
-        <span>◉</span>
-
-        <input
-          id="loginUser"
-          type="text"
-          autocomplete="username"
-          placeholder="Masukkan username"
-        >
-      </div>
-
-
-      <label for="loginPass">
-        Password
-      </label>
-
-      <div class="input-glass">
-        <span>●</span>
-
-        <input
-          id="loginPass"
-          type="password"
-          autocomplete="current-password"
-          placeholder="Masukkan password"
-        >
-      </div>
-
-
-      <button
-        id="loginBtn"
-        class="btn btn-primary login-button"
-        type="button"
-      >
-        MASUK
-      </button>
-
-      <div id="loginMsg" class="login-message"></div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- =====================================================
-     APPLICATION
-====================================================== -->
-<section id="appView" class="app-view hidden">
-
-  <!-- TOP BAR -->
-  <header class="topbar glass">
+  <div class="top">
 
     <div class="brand">
-      <div class="brand-small-icon">✓</div>
+
+      <div class="logo">
+        QR
+      </div>
 
       <div>
-        <strong>CYBER ATTENDANCE</strong>
-        <small>Sistem Informasi Kehadiran</small>
+
+        <strong>
+          QR ABSENSI
+        </strong>
+
+        <small>
+          Scanner Kehadiran Siswa
+        </small>
+
       </div>
+
     </div>
 
-    <div class="top-user">
-      <span id="userNameTop">LUTFI</span>
 
-      <span
-        id="userRoleTop"
-        class="role-badge"
-      >
-        ADMIN
-      </span>
-
-      <button
-        id="logoutBtn"
-        class="logout-btn"
-        type="button"
-      >
-        Keluar
-      </button>
+    <div class="online">
+      ● ONLINE
     </div>
 
-  </header>
+  </div>
 
 
-  <!-- NAVIGATION -->
-  <nav class="navigation glass">
+  <div class="camera-card">
+
+    <div id="reader"></div>
+
+  </div>
+
+
+  <div class="controls">
+
+    <select id="cameraSelect">
+
+      <option value="">
+        Memuat kamera...
+      </option>
+
+    </select>
+
 
     <button
-      class="nav-btn active"
-      data-page="dashboard"
+      id="switchCamera"
       type="button"
     >
-      <span>⌂</span>
-      Dashboard
+      GANTI KAMERA
     </button>
 
-    <button
-      class="nav-btn"
-      data-page="absensi"
-      type="button"
-    >
-      <span>✓</span>
-      Absensi
-    </button>
+  </div>
 
-    <button
-      class="nav-btn"
-      data-page="siswa"
-      type="button"
-    >
-      <span>♙</span>
-      Siswa
-    </button>
 
-    <button
-      class="nav-btn"
-      data-page="kelas"
-      type="button"
-    >
-      <span>▦</span>
-      Kelas
-    </button>
+  <div
+    id="status"
+    class="status"
+  >
+    Menyiapkan kamera...
+  </div>
 
-    <button
-      class="nav-btn"
-      data-page="rekap"
-      type="button"
-    >
-      <span>▤</span>
-      Rekap
-    </button>
 
-  </nav>
+  <div class="tip">
 
+    Arahkan kamera ke QR siswa.
+    <br>
+    QR harus berisi ID siswa seperti
+    <strong>S001</strong>.
 
-  <main class="main-content">
+  </div>
 
+</div>
 
-    <!-- =================================================
-         DASHBOARD
-    ================================================== -->
-    <section
-      id="page-dashboard"
-      class="page active-page"
-    >
 
-      <div class="page-heading">
-
-        <div>
-          <span class="eyebrow">DASHBOARD</span>
-
-          <h2>
-            Selamat datang,
-            <span id="welcomeName">LUTFI</span>
-          </h2>
-
-          <p>
-            Pantau kehadiran siswa secara realtime.
-          </p>
-        </div>
-
-        <div class="date-chip">
-          <span>●</span>
-          <span id="dashboardDate">-</span>
-        </div>
-
-      </div>
-
-
-      <!-- SCAN -->
-      <div class="hero-scan glass">
-
-        <div class="hero-scan-icon">
-          QR
-        </div>
-
-        <div class="hero-scan-text">
-
-          <span class="eyebrow">
-            QR ATTENDANCE
-          </span>
-
-          <h3>Scan Kehadiran</h3>
-
-          <p>
-            Scan QR siswa untuk mencatat
-            kehadiran secara otomatis sebagai
-            <strong>Hadir</strong>.
-          </p>
-
-        </div>
-
-        <button
-          id="dashboardScanBtn"
-          class="btn btn-primary"
-          type="button"
-        >
-          BUKA SCANNER
-        </button>
-
-      </div>
-
-
-      <!-- STATISTICS -->
-      <div class="stats-grid">
-
-        <div class="stat-card glass">
-          <span class="stat-icon">♙</span>
-          <div>
-            <small>Total Siswa</small>
-            <strong id="totalSiswa">0</strong>
-          </div>
-        </div>
-
-        <div class="stat-card glass">
-          <span class="stat-icon success">✓</span>
-          <div>
-            <small>Hadir</small>
-            <strong id="totalHadir">0</strong>
-          </div>
-        </div>
-
-        <div class="stat-card glass">
-          <span class="stat-icon warning">!</span>
-          <div>
-            <small>Izin</small>
-            <strong id="totalIzin">0</strong>
-          </div>
-        </div>
-
-        <div class="stat-card glass">
-          <span class="stat-icon danger">+</span>
-          <div>
-            <small>Sakit</small>
-            <strong id="totalSakit">0</strong>
-          </div>
-        </div>
-
-        <div class="stat-card glass">
-          <span class="stat-icon dark">×</span>
-          <div>
-            <small>Alpa</small>
-            <strong id="totalAlpa">0</strong>
-          </div>
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =================================================
-         ABSENSI
-    ================================================== -->
-    <section
-      id="page-absensi"
-      class="page"
-    >
-
-      <div class="page-heading">
-
-        <div>
-          <span class="eyebrow">ATTENDANCE</span>
-
-          <h2>Absensi Siswa</h2>
-
-          <p>
-            Absensi manual berdasarkan kelas.
-          </p>
-        </div>
-
-        <button
-          id="openScannerBtn"
-          class="btn btn-primary"
-          type="button"
-        >
-          SCAN QR
-        </button>
-
-      </div>
-
-
-      <div class="filter-card glass">
-
-        <div class="field">
-
-          <label for="attendanceDate">
-            Tanggal
-          </label>
-
-          <input
-            id="attendanceDate"
-            type="date"
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="attendanceClass">
-            Kelas
-          </label>
-
-          <select id="attendanceClass">
-            <option value="">
-              Pilih kelas terlebih dahulu
-            </option>
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <div class="glass table-card">
-
-        <div class="table-header">
-
-          <div>
-            <span class="eyebrow">
-              DAFTAR SISWA
-            </span>
-
-            <h3>
-              Absensi Manual
-            </h3>
-          </div>
-
-          <span
-            id="attendanceCount"
-            class="count-badge"
-          >
-            0 siswa
-          </span>
-
-        </div>
-
-
-        <div
-          id="manualAttendanceList"
-          class="attendance-list"
-        >
-          <div class="empty-state">
-            Pilih kelas untuk menampilkan siswa.
-          </div>
-        </div>
-
-
-        <div class="table-footer">
-
-          <button
-            id="saveAttendanceBtn"
-            class="btn btn-primary"
-            type="button"
-          >
-            💾 SIMPAN ABSENSI
-          </button>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =================================================
-         SISWA
-    ================================================== -->
-    <section
-      id="page-siswa"
-      class="page"
-    >
-
-      <div class="page-heading">
-
-        <div>
-          <span class="eyebrow">
-            MASTER DATA
-          </span>
-
-          <h2>Data Siswa</h2>
-
-          <p>
-            Kelola data siswa.
-          </p>
-        </div>
-
-        <button
-          id="addStudentBtn"
-          class="btn btn-primary admin-only"
-          type="button"
-        >
-          + TAMBAH SISWA
-        </button>
-
-      </div>
-
-
-      <div class="toolbar glass">
-
-        <div class="search-box">
-          <span>⌕</span>
-
-          <input
-            id="studentSearch"
-            type="search"
-            placeholder="Cari nama, NIS, NISN atau kelas..."
-          >
-        </div>
-
-        <span
-          id="studentTotal"
-          class="count-badge"
-        >
-          0 siswa
-        </span>
-
-      </div>
-
-
-      <div class="glass table-card">
-
-        <div class="table-scroll">
-
-          <table class="data-table">
-
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>NIS</th>
-                <th>Nama</th>
-                <th>Kelas</th>
-                <th>Gender</th>
-                <th>Status</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-
-            <tbody id="studentTableBody"></tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =================================================
-         KELAS
-    ================================================== -->
-    <section
-      id="page-kelas"
-      class="page"
-    >
-
-      <div class="page-heading">
-
-        <div>
-          <span class="eyebrow">
-            MASTER DATA
-          </span>
-
-          <h2>Data Kelas</h2>
-
-          <p>
-            Tambah dan kelola kelas.
-          </p>
-        </div>
-
-        <button
-          id="addClassBtn"
-          class="btn btn-primary admin-only"
-          type="button"
-        >
-          + TAMBAH KELAS
-        </button>
-
-      </div>
-
-
-      <div
-        id="classGrid"
-        class="class-grid"
-      ></div>
-
-    </section>
-
-
-    <!-- =================================================
-         REKAP
-    ================================================== -->
-    <section
-      id="page-rekap"
-      class="page"
-    >
-
-      <div class="page-heading">
-
-        <div>
-          <span class="eyebrow">
-            REPORT
-          </span>
-
-          <h2>Rekap Absensi</h2>
-
-          <p>
-            Pilih tanggal atau bulan untuk melihat laporan.
-          </p>
-        </div>
-
-      </div>
-
-
-      <div class="report-card glass">
-
-        <div class="report-tabs">
-
-          <button
-            id="reportDateTab"
-            class="report-tab active"
-            type="button"
-          >
-            Per Tanggal
-          </button>
-
-          <button
-            id="reportMonthTab"
-            class="report-tab"
-            type="button"
-          >
-            Per Bulan
-          </button>
-
-        </div>
-
-
-        <div
-          id="dateControl"
-          class="report-control"
-        >
-
-          <label for="reportDate">
-            Tanggal
-          </label>
-
-          <input
-            id="reportDate"
-            type="date"
-          >
-
-        </div>
-
-
-        <div
-          id="monthControl"
-          class="report-control hidden"
-        >
-
-          <label for="reportMonth">
-            Bulan
-          </label>
-
-          <input
-            id="reportMonth"
-            type="month"
-          >
-
-        </div>
-
-
-        <button
-          id="loadReportBtn"
-          class="btn btn-primary"
-          type="button"
-        >
-          TAMPILKAN
-        </button>
-
-      </div>
-
-
-      <div class="glass table-card">
-
-        <div class="table-scroll">
-
-          <table class="data-table">
-
-            <thead id="reportHead"></thead>
-
-            <tbody id="reportBody"></tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
-    </section>
-
-  </main>
-
-</section>
-
-
-<!-- =====================================================
-     MODAL SISWA
-====================================================== -->
 <div
-  id="studentModal"
-  class="modal hidden"
+  id="loading"
+  class="loading"
 >
 
-  <div class="modal-backdrop"></div>
+  <div class="loading-box">
 
-  <div class="modal-card glass">
+    <div class="spinner"></div>
 
-    <div class="modal-header">
-
-      <div>
-        <span class="eyebrow">
-          DATA SISWA
-        </span>
-
-        <h3 id="studentModalTitle">
-          Tambah Siswa
-        </h3>
-      </div>
-
-      <button
-        id="closeStudentModal"
-        class="modal-close"
-        type="button"
-      >
-        ×
-      </button>
-
-    </div>
-
-
-    <div class="modal-body">
-
-      <input
-        id="studentId"
-        type="hidden"
-      >
-
-
-      <div class="form-grid">
-
-        <div class="field">
-          <label for="studentNis">
-            NIS
-          </label>
-
-          <input
-            id="studentNis"
-            type="text"
-            placeholder="NIS"
-          >
-        </div>
-
-
-        <div class="field">
-          <label for="studentNisn">
-            NISN
-          </label>
-
-          <input
-            id="studentNisn"
-            type="text"
-            placeholder="NISN"
-          >
-        </div>
-
-
-        <div class="field full">
-          <label for="studentNama">
-            Nama Lengkap
-          </label>
-
-          <input
-            id="studentNama"
-            type="text"
-            placeholder="Nama lengkap siswa"
-          >
-        </div>
-
-
-        <div class="field">
-
-          <label for="studentKelas">
-            Kelas
-          </label>
-
-          <select id="studentKelas">
-            <option value="">
-              Pilih kelas
-            </option>
-          </select>
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="studentGender">
-            Jenis Kelamin
-          </label>
-
-          <select id="studentGender">
-
-            <option value="">
-              Pilih
-            </option>
-
-            <option value="Laki-laki">
-              Laki-laki
-            </option>
-
-            <option value="Perempuan">
-              Perempuan
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="studentHp">
-            No. HP
-          </label>
-
-          <input
-            id="studentHp"
-            type="tel"
-            placeholder="08xxxxxxxxxx"
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="studentStatus">
-            Status
-          </label>
-
-          <select id="studentStatus">
-
-            <option value="Aktif">
-              Aktif
-            </option>
-
-            <option value="Nonaktif">
-              Nonaktif
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="modal-footer">
-
-      <button
-        id="cancelStudentBtn"
-        class="btn btn-secondary"
-        type="button"
-      >
-        BATAL
-      </button>
-
-      <button
-        id="saveStudentBtn"
-        class="btn btn-primary"
-        type="button"
-      >
-        SIMPAN
-      </button>
-
+    <div>
+      Membaca QR...
     </div>
 
   </div>
@@ -874,201 +684,756 @@
 </div>
 
 
-<!-- =====================================================
-     MODAL KELAS
-====================================================== -->
 <div
-  id="classModal"
-  class="modal hidden"
+  id="successScreen"
+  class="success-screen"
 >
 
-  <div class="modal-backdrop"></div>
+  <div class="success-card">
 
-  <div class="modal-card glass">
-
-    <div class="modal-header">
-
-      <div>
-        <span class="eyebrow">
-          MASTER DATA
-        </span>
-
-        <h3 id="classModalTitle">
-          Tambah Kelas
-        </h3>
-      </div>
-
-      <button
-        id="closeClassModal"
-        class="modal-close"
-        type="button"
-      >
-        ×
-      </button>
-
+    <div class="success-icon">
+      ✓
     </div>
 
+    <h2>
+      QR TERBACA
+    </h2>
 
-    <div class="modal-body">
-
-      <input
-        id="classId"
-        type="hidden"
-      >
-
-
-      <div class="field">
-
-        <label for="classNama">
-          Nama Kelas
-        </label>
-
-        <input
-          id="classNama"
-          type="text"
-          placeholder="Contoh: X IPA 1"
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label for="classWali">
-          Wali Kelas
-        </label>
-
-        <input
-          id="classWali"
-          type="text"
-          placeholder="Nama wali kelas"
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label for="classTahun">
-          Tahun Ajaran
-        </label>
-
-        <input
-          id="classTahun"
-          type="text"
-          placeholder="2026/2027"
-        >
-
-      </div>
-
-    </div>
-
-
-    <div class="modal-footer">
-
-      <button
-        id="cancelClassBtn"
-        class="btn btn-secondary"
-        type="button"
-      >
-        BATAL
-      </button>
-
-      <button
-        id="saveClassBtn"
-        class="btn btn-primary"
-        type="button"
-      >
-        SIMPAN
-      </button>
-
-    </div>
+    <p id="successText">
+      Mengirim data ke aplikasi absensi...
+    </p>
 
   </div>
 
 </div>
 
 
-<!-- =====================================================
-     MODAL QR
-====================================================== -->
-<div
-  id="qrModal"
-  class="modal hidden"
->
+<script>
 
-  <div class="modal-backdrop"></div>
-
-  <div class="modal-card qr-modal-card glass">
-
-    <div class="modal-header">
-
-      <div>
-        <span class="eyebrow">
-          STUDENT QR
-        </span>
-
-        <h3 id="qrStudentName">
-          QR Siswa
-        </h3>
-      </div>
-
-      <button
-        id="closeQrModal"
-        class="modal-close"
-        type="button"
-      >
-        ×
-      </button>
-
-    </div>
+'use strict';
 
 
-    <div class="qr-content">
+/* =====================================================
+   CONFIG
+===================================================== */
 
-      <div
-        id="qrBox"
-        class="qr-box"
-      ></div>
-
-      <div
-        id="qrStudentInfo"
-        class="qr-student-info"
-      ></div>
-
-    </div>
+var params =
+  new URLSearchParams(
+    window.location.search
+  );
 
 
-    <div class="modal-footer">
-
-      <button
-        id="printQrBtn"
-        class="btn btn-secondary"
-        type="button"
-      >
-        CETAK
-      </button>
-
-      <button
-        id="downloadQrBtn"
-        class="btn btn-primary"
-        type="button"
-      >
-        DOWNLOAD QR
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
+var returnOrigin =
+  params.get(
+    'returnOrigin'
+  ) || '';
 
 
-<!-- =====================================================
-     JAVASCRIPT
-====================================================== -->
+var html5QrCode =
+  null;
 
-<?!= include('JavaScript'); ?>
+
+var cameras =
+  [];
+
+
+var currentCameraId =
+  '';
+
+
+var sent =
+  false;
+
+
+var starting =
+  false;
+
+
+/* =====================================================
+   ELEMENT
+===================================================== */
+
+function byId(id) {
+  return document.getElementById(id);
+}
+
+
+var statusBox =
+  byId('status');
+
+var cameraSelect =
+  byId('cameraSelect');
+
+var switchButton =
+  byId('switchCamera');
+
+var loading =
+  byId('loading');
+
+var successScreen =
+  byId('successScreen');
+
+var successText =
+  byId('successText');
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+function setStatus(
+  text,
+  type
+) {
+
+  statusBox.textContent =
+    text || '';
+
+  statusBox.className =
+    'status';
+
+  if (type) {
+    statusBox.classList.add(type);
+  }
+
+}
+
+
+/* =====================================================
+   NORMALIZE QR
+===================================================== */
+
+function normalizeCode(
+  text
+) {
+
+  return String(text || '')
+    .trim()
+    .replace(
+      /\s+/g,
+      ''
+    )
+    .toUpperCase();
+
+}
+
+
+/* =====================================================
+   CAMERA
+===================================================== */
+
+async function loadCameras() {
+
+  if (
+    typeof Html5Qrcode ===
+    'undefined'
+  ) {
+
+    setStatus(
+      'Library scanner gagal dimuat.',
+      'error'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    cameras =
+      await Html5Qrcode.getCameras();
+
+
+    cameraSelect.innerHTML = '';
+
+
+    if (
+      !cameras ||
+      !cameras.length
+    ) {
+
+      throw new Error(
+        'Kamera tidak ditemukan.'
+      );
+
+    }
+
+
+    cameras.forEach(
+      function(camera, index) {
+
+        var option =
+          document.createElement(
+            'option'
+          );
+
+        option.value =
+          camera.id;
+
+        option.textContent =
+          camera.label ||
+          (
+            'Kamera ' +
+            (index + 1)
+          );
+
+        cameraSelect.appendChild(
+          option
+        );
+
+      }
+    );
+
+
+    var preferred =
+      findRearCamera();
+
+
+    currentCameraId =
+      preferred
+        ? preferred.id
+        : cameras[0].id;
+
+
+    cameraSelect.value =
+      currentCameraId;
+
+
+    await startScanner(
+      currentCameraId
+    );
+
+
+  } catch (error) {
+
+    setStatus(
+      'Tidak dapat mengakses kamera. Izinkan kamera pada browser lalu muat ulang halaman.',
+      'error'
+    );
+
+    console.error(error);
+
+  }
+
+}
+
+
+function findRearCamera() {
+
+  for (
+    var i = 0;
+    i < cameras.length;
+    i++
+  ) {
+
+    var label =
+      String(
+        cameras[i].label || ''
+      ).toLowerCase();
+
+
+    if (
+      label.indexOf('back') !== -1 ||
+      label.indexOf('rear') !== -1 ||
+      label.indexOf('environment') !== -1
+    ) {
+
+      return cameras[i];
+
+    }
+
+  }
+
+  return null;
+
+}
+
+
+function findFrontCamera() {
+
+  for (
+    var i = 0;
+    i < cameras.length;
+    i++
+  ) {
+
+    var label =
+      String(
+        cameras[i].label || ''
+      ).toLowerCase();
+
+
+    if (
+      label.indexOf('front') !== -1 ||
+      label.indexOf('user') !== -1
+    ) {
+
+      return cameras[i];
+
+    }
+
+  }
+
+  return null;
+
+}
+
+
+/* =====================================================
+   START SCANNER
+===================================================== */
+
+async function startScanner(
+  cameraId
+) {
+
+  if (starting) {
+    return;
+  }
+
+
+  starting = true;
+
+
+  try {
+
+    if (html5QrCode) {
+
+      try {
+
+        await html5QrCode.stop();
+
+      } catch (stopError) {
+      }
+
+
+      try {
+
+        await html5QrCode.clear();
+
+      } catch (clearError) {
+      }
+
+    }
+
+
+    html5QrCode =
+      new Html5Qrcode(
+        'reader'
+      );
+
+
+    currentCameraId =
+      cameraId || '';
+
+
+    var config = {
+
+      fps: 15,
+
+      qrbox: function(
+        width,
+        height
+      ) {
+
+        var size =
+          Math.floor(
+            Math.min(
+              width,
+              height
+            ) * .72
+          );
+
+        size =
+          Math.max(
+            180,
+            Math.min(
+              size,
+              320
+            )
+          );
+
+        return {
+          width: size,
+          height: size
+        };
+
+      },
+
+      aspectRatio: 1,
+
+      disableFlip: false
+
+    };
+
+
+    await html5QrCode.start(
+
+      cameraId,
+
+      config,
+
+      onScanSuccess,
+
+      onScanError
+
+    );
+
+
+    setStatus(
+      'Kamera aktif. Arahkan QR siswa ke kotak scanner.',
+      null
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+
+    /*
+     * Fallback memakai facingMode.
+     * Berguna ketika browser tidak memberikan
+     * device ID dengan benar.
+     */
+
+    try {
+
+      if (html5QrCode) {
+
+        try {
+          await html5QrCode.stop();
+        } catch (e1) {
+        }
+
+      }
+
+
+      html5QrCode =
+        new Html5Qrcode(
+          'reader'
+        );
+
+
+      await html5QrCode.start(
+
+        {
+          facingMode: {
+            ideal: 'environment'
+          }
+        },
+
+        config,
+
+        onScanSuccess,
+
+        onScanError
+
+      );
+
+
+      setStatus(
+        'Kamera aktif menggunakan kamera belakang.',
+        null
+      );
+
+
+    } catch (fallbackError) {
+
+      console.error(
+        fallbackError
+      );
+
+      setStatus(
+        'Kamera gagal dibuka. Pastikan HTTPS dan izin kamera aktif.',
+        'error'
+      );
+
+    }
+
+  } finally {
+
+    starting = false;
+
+  }
+
+}
+
+
+/* =====================================================
+   QR SUCCESS
+===================================================== */
+
+async function onScanSuccess(
+  decodedText
+) {
+
+  if (sent) {
+    return;
+  }
+
+
+  var code =
+    normalizeCode(
+      decodedText
+    );
+
+
+  if (
+    !/^S\d+$/i.test(code)
+  ) {
+
+    setStatus(
+      'QR terbaca, tetapi bukan ID siswa. Contoh yang benar: S001',
+      'error'
+    );
+
+    return;
+
+  }
+
+
+  sent = true;
+
+
+  loading.classList.add(
+    'show'
+  );
+
+
+  successScreen.classList.add(
+    'show'
+  );
+
+
+  successText.textContent =
+    'ID ' +
+    code +
+    ' terbaca. Mengirim ke aplikasi absensi...';
+
+
+  setStatus(
+    'QR berhasil dibaca.',
+    'success'
+  );
+
+
+  try {
+
+    if (html5QrCode) {
+
+      try {
+        await html5QrCode.stop();
+      } catch (stopError) {
+      }
+
+    }
+
+
+    /*
+     * Kirim ke parent Google Apps Script.
+     */
+
+    if (
+      !window.opener ||
+      window.opener.closed
+    ) {
+
+      throw new Error(
+        'Halaman aplikasi absensi tidak ditemukan.'
+      );
+
+    }
+
+
+    if (!returnOrigin) {
+
+      throw new Error(
+        'Alamat aplikasi absensi tidak ditemukan.'
+      );
+
+    }
+
+
+    window.opener.postMessage(
+      {
+        type:
+          'QR_ATTENDANCE',
+
+        studentId:
+          code
+      },
+      returnOrigin
+    );
+
+
+    successText.textContent =
+      'QR ' +
+      code +
+      ' berhasil dikirim. Absensi sedang disimpan...';
+
+
+    /*
+     * Beri waktu parent menerima message.
+     */
+
+    setTimeout(
+      function() {
+
+        try {
+          window.close();
+        } catch (closeError) {
+        }
+
+      },
+      1200
+    );
+
+
+  } catch (error) {
+
+    sent = false;
+
+    loading.classList.remove(
+      'show'
+    );
+
+    successScreen.classList.remove(
+      'show'
+    );
+
+
+    setStatus(
+      error.message ||
+      'Gagal mengirim QR.',
+      'error'
+    );
+
+  }
+
+}
+
+
+function onScanError(
+  errorMessage
+) {
+
+  /*
+   * Jangan tampilkan setiap frame gagal.
+   * Itu normal pada scanner.
+   */
+
+}
+
+
+/* =====================================================
+   SWITCH CAMERA
+===================================================== */
+
+switchButton.addEventListener(
+  'click',
+  async function() {
+
+    if (
+      cameras.length < 2
+    ) {
+
+      /*
+       * Kalau hanya ada satu kamera,
+       * coba facingMode.
+       */
+
+      setStatus(
+        'Hanya satu kamera terdeteksi.',
+        null
+      );
+
+      return;
+
+    }
+
+
+    var currentIndex =
+      cameras.findIndex(
+        function(camera) {
+          return (
+            camera.id ===
+            currentCameraId
+          );
+        }
+      );
+
+
+    var nextIndex =
+      (
+        currentIndex + 1
+      ) % cameras.length;
+
+
+    var nextCamera =
+      cameras[nextIndex];
+
+
+    cameraSelect.value =
+      nextCamera.id;
+
+
+    await startScanner(
+      nextCamera.id
+    );
+
+  }
+);
+
+
+/* =====================================================
+   SELECT CAMERA
+===================================================== */
+
+cameraSelect.addEventListener(
+  'change',
+  async function() {
+
+    var id =
+      cameraSelect.value;
+
+
+    if (!id) {
+      return;
+    }
+
+
+    sent = false;
+
+
+    await startScanner(
+      id
+    );
+
+  }
+);
+
+
+/* =====================================================
+   START
+===================================================== */
+
+window.addEventListener(
+  'load',
+  function() {
+
+    /*
+     * Kamera otomatis dimulai
+     * ketika scanner dibuka.
+     */
+
+    loadCameras();
+
+  }
+);
+
+</script>
 
 </body>
 </html>
